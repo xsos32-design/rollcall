@@ -102,14 +102,15 @@ const TRAIN1={3:[["RCI","朱韋任"]],4:[["獺祭","陳怡伃"]],11:[["CHOYA","�
 const TRAIN2={3:[["RCI","賴姿伶"]],4:[["獺祭","高玉嵐"]],11:[["CHOYA","張語昕"]],16:[["Dunhill","林軒弘"]]};
 
 function parse(raw){let mark="",b=raw;
-  let p=b.match(/^(課|月會|視訊)/); if(p){mark+=p[1];b=b.slice(p[1].length);}
-  let s=b.match(/(課|月會|視訊)$/); if(s){mark+=s[1];b=b.slice(0,-s[1].length);}
+  let p=b.match(/^(課|月會|視訊|基礎)/); if(p){mark+=p[1];b=b.slice(p[1].length);}
+  let s=b.match(/(課|月會|視訊|基礎)$/); if(s){mark+=s[1];b=b.slice(0,-s[1].length);}
   return {base:b,mark};}
 function tmap(TR,d){const m={};(TR[d]||[]).forEach(t=>t[1].split("、").forEach(n=>m[n]=t[0]));return m;}
 function cls(c){if(c[0]==="外")return"cX";if(c[0]==="T")return"cT";if(c[0]==="B")return"cB";if(c[0]==="4")return"c4";if(c[0]==="L")return"cL";if(c[0]==="K")return"cX";return"";}
 function group(R,CODES,d,tm){const map={};CODES.forEach(c=>map[c]=[]);const other={};
-  R.forEach(p=>{const raw=(p[2].split(",")[d-1]||"").trim();
+  R.forEach(p=>{let raw=(p[2].split(",")[d-1]||"").trim();
     if(!raw||raw==="休"){return;}
+    raw=raw.replace(/基礎/g,"");
     const {base,mark}=parse(raw);const ann=mark||tm[p[1]]||"";
     const it={name:p[1],grp:p[0],ann};
     if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
