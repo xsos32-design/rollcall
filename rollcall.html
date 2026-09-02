@@ -96,8 +96,8 @@ const R2=[
 ["D","孟憲鴻","本1,國13,B1上,L9,本2,休,休,本3,本4,B2,44,B1上,本5,L1,月會B$,外B2,本6,B2,B$,B1下,本7,基礎B2,L9,L9,L9,本8,L9,L9,休,L9"],
 ["B","李玉聖","L9,L9,L9,本2,本3,L9,L9,L9,L9,L9,本4,L9,L9,L9,本5,L9,L9,L9,本6,L9,L9,L9,本7,L2基礎,國13,本8,本1,A,L9,L9"],
 ];
-const CODES1=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","L1","45上","45下","L9","K8"];
-const CODES2=["B1上","B1下","B2","外B2","B3","B$","B5","B6","B7","B8","44","L1","L9"];
+const CODES1=["T1上","T1下","T2","外T2","T3","T4","T$","T5","T6","T7","T8","L1","45上","45下","L9","K8"];
+const CODES2=["B1上","B1下","B2","外B2","B3","B4","B$","B5","B6","B7","B8","44","L1","L9"];
 const TRAIN1={3:[["RCI","朱韋任"]],4:[["獺祭","陳怡伃"]],11:[["CHOYA","陳貢鈴"]],15:[["部門月會","李承屏、陳芷琳"]],16:[["Dunhill","游志士"]],17:[["視訊","黃安祺"],["Dunhill","吳佩珊"]],30:[["Suntory","陳雨彤"]]};
 const TRAIN2={3:[["RCI","賴姿伶"]],4:[["獺祭","高玉嵐"]],11:[["CHOYA","張語昕"]],16:[["Dunhill","林軒弘"]]};
 
@@ -116,12 +116,12 @@ function group(R,CODES,d,tm){const map={};CODES.forEach(c=>map[c]=[]);const othe
     if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
   return {map,other};}
 function reportText(R,CODES,d,tm){const g=group(R,CODES,d,tm);const lines=[`${MONTH}/${d}${R===R1?"一組":"二組"}點名`,""];
-  CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return; if(c==="B8"&&!g.map[c].length)return;
-    const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")).join("、");lines.push(`${c}：${nm||"沒有"}`);});
+  CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return;
+    const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")).join("、");lines.push(`${c}：${nm||"🈚️"}`);});
   return lines.join("\n");}
 function renderCol(R,CODES,d,tm,el){const g=group(R,CODES,d,tm);let h="";
-  CODES.forEach(c=>{const L=g.map[c]; if((c==="K8"||c==="B8")&&!L.length)return;
-    const nm=L.length?L.map(x=>`${x.name}${x.ann?`<span class=mk>（${x.ann}）</span>`:""}`).join("、"):`<span class=none>沒有</span>`;
+  CODES.forEach(c=>{const L=g.map[c]; if(c==="K8"&&!L.length)return;
+    const nm=L.length?L.map(x=>`${x.name}${x.ann?`<span class=mk>（${x.ann}）</span>`:""}`).join("、"):`<span class=none>🈚️</span>`;
     h+=`<div class=line><b class="${cls(c)}">${c}</b> ${nm}</div>`;});
   const ok=Object.keys(g.other).sort();
   if(ok.length){h+=`<div class=oh>其他</div>`;ok.forEach(c=>{h+=`<div class=o>${c}：${g.other[c].join("、")}</div>`;});}
