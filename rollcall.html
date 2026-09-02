@@ -3,134 +3,146 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>一組點名 · 115年9月</title>
+<title>營三部二期入境 · 點名</title>
 <style>
-  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { margin:0; background:#0d1117; color:#e6edf3;
-    font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif; padding:12px 12px 40px; }
-  h1{font-size:18px; margin:4px 0 2px; text-align:center}
-  .sub{text-align:center; color:#8b949e; font-size:12px; margin-bottom:10px}
-  .dates{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:14px}
-  .wk{text-align:center; font-size:11px; color:#8b949e; padding-bottom:2px}
-  .wk.sat{color:#6ea8fe} .wk.sun{color:#ff7b72}
-  .d{background:#161b22; border:1px solid #30363d; border-radius:8px; padding:8px 0;
-    text-align:center; font-size:15px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:1px}
-  .d .num{font-weight:600} .d .wd{font-size:10px; color:#8b949e}
-  .d.sat .wd{color:#6ea8fe} .d.sun .wd{color:#ff7b72}
-  .d.active{background:#1f6feb; border-color:#1f6feb} .d.active .wd{color:#cfe0ff}
-  #title{font-size:16px; font-weight:600; margin:4px 0 8px; text-align:center}
-  #copyBtn{width:100%; padding:12px; font-size:16px; font-weight:600; color:#fff;
-    background:#238636; border:none; border-radius:10px; cursor:pointer; margin-bottom:8px}
-  #copyBtn:active{background:#2ea043}
-  #report{width:100%; height:360px; background:#161b22; color:#e6edf3; border:1px solid #30363d;
-    border-radius:10px; padding:12px; font-size:15px; line-height:1.7; resize:vertical;
-    font-family:-apple-system,"PingFang TC","Microsoft JhengHei",monospace; margin-bottom:14px}
-  .sec-h{font-size:12px; color:#8b949e; margin:8px 0 6px; letter-spacing:1px}
-  .grp{margin-bottom:8px; border:1px solid #30363d; border-radius:10px; overflow:hidden}
-  .grp-h{display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:#161b22}
-  .grp-h .code{font-weight:700; font-size:15px} .grp-h .cnt{font-size:12px; color:#8b949e}
-  .grp-b{padding:2px 12px 8px}
-  .name{display:inline-flex; align-items:center; gap:5px; margin:5px 8px 0 0; font-size:15px}
-  .tag{font-size:10px; color:#8b949e; background:#21262d; border-radius:4px; padding:1px 5px}
-  .mk{font-size:11px; color:#f0c674}
-  .none{color:#8b949e; font-size:14px}
-  .c-T1 .code{color:#7ee787} .c-T .code{color:#79c0ff} .c-45 .code{color:#d2a8ff}
-  .c-L .code{color:#ffa657} .c-out .code{color:#ff7b72}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:#0d1117;color:#e6edf3;font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;padding:10px 8px 40px}
+  h1{font-size:17px;margin:4px 0 2px;text-align:center}
+  .sub{text-align:center;color:#8b949e;font-size:12px;margin-bottom:8px}
+  .dates{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px}
+  .wk{text-align:center;font-size:11px;color:#8b949e}
+  .wk.sat{color:#6ea8fe}.wk.sun{color:#ff7b72}
+  .d{background:#161b22;border:1px solid #30363d;border-radius:7px;padding:7px 0;text-align:center;font-size:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px}
+  .d .num{font-weight:600}.d .wd{font-size:9px;color:#8b949e}
+  .d.sat .wd{color:#6ea8fe}.d.sun .wd{color:#ff7b72}
+  .d.active{background:#1f6feb;border-color:#1f6feb}.d.active .wd{color:#cfe0ff}
+  #title{font-size:15px;font-weight:600;margin:4px 0 8px;text-align:center}
+  .btns{display:flex;gap:8px;margin-bottom:10px}
+  .cp{flex:1;padding:11px;font-size:14px;font-weight:600;color:#fff;background:#238636;border:none;border-radius:9px;cursor:pointer}
+  .cp:active{background:#2ea043}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .col{border:1px solid #30363d;border-radius:10px;overflow:hidden}
+  .colh{background:#1f2937;color:#fff;font-weight:700;text-align:center;padding:7px;font-size:14px}
+  .colb{padding:6px 8px}
+  .line{font-size:13px;line-height:1.5;padding:2px 0;border-bottom:1px solid #21262d}
+  .line b{display:inline-block;min-width:34px;font-weight:700}
+  .none{color:#484f58}
+  .mk{color:#f0c674;font-size:11px}
+  .oh{font-size:11px;color:#8b949e;margin:6px 0 2px;letter-spacing:1px}
+  .o{font-size:12px;color:#8b949e;line-height:1.5}
+  .cT{color:#79c0ff}.cB{color:#7ee787}.c4{color:#d2a8ff}.cL{color:#ffa657}.cX{color:#ff7b72}
+  #report{position:absolute;left:-9999px}
 </style>
 </head>
 <body>
-  <h1>營業三部 · 二期入境一組(夜)</h1>
-  <div class="sub">115年9月 · 點日期 → 複製回報</div>
-
+  <h1>營三部二期入境（夜）· 點名</h1>
+  <div class="sub">115年9月 · 點日期 → 左一組 右二組</div>
   <div class="dates" id="dates"></div>
-  <div id="title"></div>
-  <button id="copyBtn" onclick="copyReport()">複製回報</button>
-  <textarea id="report" readonly placeholder="點選上方日期後顯示回報內容"></textarea>
-
-  <div class="sec-h">明細（可核對）</div>
-  <div id="out"></div>
+  <div id="title">請點選日期</div>
+  <div class="btns">
+    <button class="cp" onclick="copyG(1)">複製一組</button>
+    <button class="cp" onclick="copyG(2)">複製二組</button>
+  </div>
+  <div class="cols">
+    <div class="col"><div class="colh">一組</div><div class="colb" id="c1"></div></div>
+    <div class="col"><div class="colh">二組</div><div class="colb" id="c2"></div></div>
+  </div>
+  <textarea id="report"></textarea>
 
 <script>
-const YM="115年9月", MONTH=9, NDAYS=30;
-const R=[
-["A","35839","陳芷琳","本1,本2,L1,T1下,本3,T5,T5,45下,本4,L1,T3,T2,外T2,本5,T6,T1上,T$,本6,T1下,T$,國13,本7,T5,L9,本8,45上,45下,外T2,T1下,本1"],
-["B","33827","陳貢鈴","T1上,T2,T5,本2,L9,國補3,T1下,本3,45下,外T2,T6,本4,T3,T3,本5,T$,國13,L1,L9,本6,本7,T7,T2,本8,45下,T1下,本1,T6,T3,45上"],
-["C","35083","吳佩珊","T2,本2,國13,L1,45上,T7,L9,L9,本3,45上,外T2,本4,T6,T5,本5,本6,T5,T$,T1上,本7,T$,45下,T6,本8,T3,T3,T1下,本1,國補5,T1上"],
-["D","99079","陳怡伃","本1,本2,T1上,T6,本3,外T2,45上,L1,本4,T3,T$,外T2,T2,本5,國13,國補5,本6,T1下,45下,L9,L9,本7,T3,T5,本8,L1,T2,T1下,本1,45下"],
-["A","93487","游志士","T1下,本1,T2,T1上,A,本2,T3,45上,T1下,本3,L1,本4,本5,外T2,T$,T5,本6,T6,A,國13,本7,T2,45下,T$,45上,本8,L9,L9,國14,本1"],
-["B","22126","吳信宜","外T2,T1下,本2,T2,T1上,T6,本3,T3,L1,T$,本4,45上,T7,本5,本6,國13,A,L9,本7,45下,45下,T5,本8,T6,L1,T2,本1,T1上,45下,T$"],
-["C","32379","吳慶鴻","T3,外T2,T1下,本2,T2,T1上,L1,本3,45上,45下,T1下,本4,L9,本5,外T2,本6,國13,T7,T6,45上,本7,T$,T7,本8,國補3,T5,T1上,本1,L1,T3"],
-["D","17117","李明翰","本1,國13,L9,L9,本2,T3,T1上,T6,本3,本4,45上,T1下,本5,T6,45下,外T2,本6,45上,T5,T6,本7,T3,T$,外T2,本8,T1上,L1,T2,本1,A"],
-["A","34750","陳泂圖","T5,L1,本1,45下,T1下,本2,T2,T1上,本3,本4,國13,T$,T1下,本5,45上,L9,L9,本6,T$,T1下,T5,本7,L1,45下,外T2,本8,T6,T3,T2,本1"],
-["B","33190","吳晧誠","L1,45下,本2,45上,國13,本3,T$,T2,T1上,T6,本4,T5,45上,T1下,本5,T6,外T2,本6,T3,T5,T1下,外T2,本7,T3,L9,本8,本1,國14,T$,T5"],
-["C","35203","黃安祺","T6,T3,外T2,本2,L1,L1,T6,本3,T2,T1上,45下,本4,國13,L9,L9,本5,K8視訊,外T2,本6,本7,T3,T1下,本8,45上,T1上,T$,T5,45上,本1,T2"],
-["D","30907","陳雨彤","本1,T1上,45上,T7,本2,L9,本3,國13,本4,T2,T1上,L1,本5,T$,T2,45上,本6,T5,外T2,T3,本7,T8,T1下,T7,本8,喪4,T3,45下,本1,T6"],
-["A","33957","陳世傑","T$,45上,本1,T5,外T2,T1下,本2,本3,L9,本4,T2,T6,國13,本5,T3,L1,45上,本6,L1,外T2,T6,本7,T1上,T1下,T7,本8,T7,T$,45上,本1"],
-["B","32469","沙上智","45上,T6,T$,本2,T3,T2,本3,T1下,T6,T5,本4,國13,L1,T2,本5,T3,45下,本6,本7,T7,T2,45上,本8,T1上,T$,L9,本1,T5,T6,外T2"],
-["C","34866","林洧盈","國13,本2,A,A,A,本3,外T2,T5,T$,L9,本4,45下,T1上,L1,T5,本5,T3,45下,本6,T2,外T2,T1上,45上,本7,本8,45下,T$,本1,T1上,L1"],
-["D","25529","李承屏","本1,T$,T3,外T2,45下,本2,國13,本3,國補6,本4,L9,L9,本5,T1上,T1下,T1下,T2,本6,45上,L1,45上,本7,外T2,L1,T1下,本8,A,本1,A,A"],
-["A","35868","蔡亞璇","國13,本2,45下,T3,T$,45上,本3,外T2,T5,本4,T7,T1上,45下,本5,T1上,T2,L1,T3,本6,本7,T1上,L9,L9,國補4,T5,本8,45上,L1,外T2,本1"],
-["B","34546","湯文愷","L9,L9,本2,T$,T5,45下,本3,T$,外T2,國13,本4,T3,T5,45下,本5,45下,T1上,T2,本6,T1上,L1,T6,本7,T2,T6,本8,本1,A,T5,T1下"],
-["C","36673","朱韋任","45下,T5,T6,本2,T6,T$,45下,本3,T3,T1下,T5,本4,T$,45上,L1,本5,T1下,T1上,T2,本6,本7,L1,國13,本8,T2,外T2,外T2,本1,L9,L9"],
-].map(r=>({grp:r[0],id:r[1],name:r[2],days:r[3].split(",")}));
-
-const CODES=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","L1","45上","45下","L9","K8"];
+const MONTH=9,NDAYS=30,YM="115年9月";
 const WD=["二","三","四","五","六","日","一"];
-const TRAIN={
-  3:[["RCI","14:00-16:00","朱韋任"]],
-  4:[["Dassai獺祭","14:00-16:00","陳怡伃"]],
-  11:[["CHOYA","14:00-16:00","陳貢鈴"]],
-  15:[["部門月會","14:00-15:30","李承屏、陳芷琳"]],
-  16:[["Dunhill","14:00-16:00","游志士"]],
-  17:[["視訊","08:00-11:00","黃安祺"],["Dunhill","14:00-16:00","吳佩珊"]],
-  30:[["Suntory","14:00-16:00","陳雨彤"]],
-};
 const wd=d=>WD[(d-1)%7];
-const base=c=>c.replace(/(課|月會|視訊)$/,"");
-function cls(c){ if(c.startsWith("外"))return"c-out"; if(c.startsWith("T1"))return"c-T1";
-  if(c.startsWith("T"))return"c-T"; if(c.startsWith("45"))return"c-45"; if(c.startsWith("L"))return"c-L"; return""; }
-function trainMap(d){const m={};(TRAIN[d]||[]).forEach(t=>t[2].split("、").forEach(n=>m[n]=t[0]));return m;}
 
-function groups(d){ const map={};CODES.forEach(c=>map[c]=[]);const other={};
-  R.forEach(p=>{const raw=p.days[d-1]||"";const b=base(raw);
-    const item={name:p.name,grp:p.grp,mark:raw!==b?raw.slice(b.length):""};
-    if(CODES.includes(b))map[b].push(item); else (other[b]=other[b]||[]).push(item);});
-  return {map,other}; }
-function reportText(d,map){
-  const tm=trainMap(d);
-  const lines=[`${MONTH}/${d}一組點名`,""];
-  CODES.forEach(c=>{ if(c==="K8"&&!map[c].length)return; const names=map[c].map(x=>{const a=x.mark||tm[x.name]||"";return x.name+(a?`（${a}）`:"");}).join("、"); lines.push(`${c}：${names||"沒有"}`); });
-  return lines.join("\n");
-}
+const R1=[
+["A","陳芷琳","本1,本2,L1,T1下,本3,T5,T5,45下,本4,L1,T3,T2,外T2,本5,T6,T1上,T$,本6,T1下,T$,國13,本7,T5,L9,本8,45上,45下,外T2,T1下,本1"],
+["B","陳貢鈴","T1上,T2,T5,本2,L9,國補3,T1下,本3,45下,外T2,T6,本4,T3,T3,本5,T$,國13,L1,L9,本6,本7,T7,T2,本8,45下,T1下,本1,T6,T3,45上"],
+["C","吳佩珊","T2,本2,國13,L1,45上,T7,L9,L9,本3,45上,外T2,本4,T6,T5,本5,本6,T5,T$,T1上,本7,T$,45下,T6,本8,T3,T3,T1下,本1,國補5,T1上"],
+["D","陳怡伃","本1,本2,T1上,T6,本3,外T2,45上,L1,本4,T3,T$,外T2,T2,本5,國13,國補5,本6,T1下,45下,L9,L9,本7,T3,T5,本8,L1,T2,T1下,本1,45下"],
+["A","游志士","T1下,本1,T2,T1上,A,本2,T3,45上,T1下,本3,L1,本4,本5,外T2,T$,T5,本6,T6,A,國13,本7,T2,45下,T$,45上,本8,L9,L9,國14,本1"],
+["B","吳信宜","外T2,T1下,本2,T2,T1上,T6,本3,T3,L1,T$,本4,45上,T7,本5,本6,國13,A,L9,本7,45下,45下,T5,本8,T6,L1,T2,本1,T1上,45下,T$"],
+["C","吳慶鴻","T3,外T2,T1下,本2,T2,T1上,L1,本3,45上,45下,T1下,本4,L9,本5,外T2,本6,國13,T7,T6,45上,本7,T$,T7,本8,國補3,T5,T1上,本1,L1,T3"],
+["D","李明翰","本1,國13,L9,L9,本2,T3,T1上,T6,本3,本4,45上,T1下,本5,T6,45下,外T2,本6,45上,T5,T6,本7,T3,T$,外T2,本8,T1上,L1,T2,本1,A"],
+["A","陳泂圖","T5,L1,本1,45下,T1下,本2,T2,T1上,本3,本4,國13,T$,T1下,本5,45上,L9,L9,本6,T$,T1下,T5,本7,L1,45下,外T2,本8,T6,T3,T2,本1"],
+["B","吳晧誠","L1,45下,本2,45上,國13,本3,T$,T2,T1上,T6,本4,T5,45上,T1下,本5,T6,外T2,本6,T3,T5,T1下,外T2,本7,T3,L9,本8,本1,國14,T$,T5"],
+["C","黃安祺","T6,T3,外T2,本2,L1,L1,T6,本3,T2,T1上,45下,本4,國13,L9,L9,本5,K8視訊,外T2,本6,本7,T3,T1下,本8,45上,T1上,T$,T5,45上,本1,T2"],
+["D","陳雨彤","本1,T1上,45上,T7,本2,L9,本3,國13,本4,T2,T1上,L1,本5,T$,T2,45上,本6,T5,外T2,T3,本7,T8,T1下,T7,本8,喪4,T3,45下,本1,T6"],
+["A","陳世傑","T$,45上,本1,T5,外T2,T1下,本2,本3,L9,本4,T2,T6,國13,本5,T3,L1,45上,本6,L1,外T2,T6,本7,T1上,T1下,T7,本8,T7,T$,45上,本1"],
+["B","沙上智","45上,T6,T$,本2,T3,T2,本3,T1下,T6,T5,本4,國13,L1,T2,本5,T3,45下,本6,本7,T7,T2,45上,本8,T1上,T$,L9,本1,T5,T6,外T2"],
+["C","林洧盈","國13,本2,A,A,A,本3,外T2,T5,T$,L9,本4,45下,T1上,L1,T5,本5,T3,45下,本6,T2,外T2,T1上,45上,本7,本8,45下,T$,本1,T1上,L1"],
+["D","李承屏","本1,T$,T3,外T2,45下,本2,國13,本3,國補6,本4,L9,L9,本5,T1上,T1下,T1下,T2,本6,45上,L1,45上,本7,外T2,L1,T1下,本8,A,本1,A,A"],
+["A","蔡亞璇","國13,本2,45下,T3,T$,45上,本3,外T2,T5,本4,T7,T1上,45下,本5,T1上,T2,L1,T3,本6,本7,T1上,L9,L9,國補4,T5,本8,45上,L1,外T2,本1"],
+["B","湯文愷","L9,L9,本2,T$,T5,45下,本3,T$,外T2,國13,本4,T3,T5,45下,本5,45下,T1上,T2,本6,T1上,L1,T6,本7,T2,T6,本8,本1,A,T5,T1下"],
+["C","朱韋任","45下,T5,T6,本2,T6,T$,45下,本3,T3,T1下,T5,本4,T$,45上,L1,本5,T1下,T1上,T2,本6,本7,L1,國13,本8,T2,外T2,外T2,本1,L9,L9"],
+];
+const R2=[
+["A","李郁欣","本2,B2,44,B5,本3,L1,A,B3,B5,本4,L1,B2,L9,本5,B1下,B$,44,外B2,本6,本7,B1上,外B2,國13,B$,基礎B3,本8,B6,B3,B1上,本1"],
+["B","羅羽希","B2,B3,本2,國13,L1,B1下,本3,外B2,B1下,B7,B$,本4,B5,B3,本5,病5,病6,病7,本6,病8,病9,病10,本7,病11,病12,本8,本1,病13,病14,病15"],
+["C","黃珮筑","外B2,B$,B3,本2,B6,44,本3,B$,B6,B1下,本4,外B2,L1,B1下,國13,本5,本6,B1下,L9,本7,B2,基礎B6,L1,本8,B1上,44,B7,B5,本1,B5"],
+["D","梁雅棋","本1,B1上,B$,B3,本2,B5,B2,B6,本3,本4,B1上,B3,外B2,本5,國13,B3,本6,L1,B6,B$,本7,44,B3,L9,本8,B2,B5,本1,B1下,44"],
+["A","陳建吉","44,本2,B2,B1上,B3,本3,L1,A,A,本4,A,國13,本5,B$,B1上,B5,外B2,本6,B2,L1,B5,本7,外B2,基礎44,本8,B5,B3,B1下,L9,本1"],
+["B","張語昕","國13,本2,A,A,B2,外B2,本3,B1下,44,本4,課B6,L1,B1下,B5,本5,B1上,B3,B$,本6,B5,L1,B1上,L9,本7,基礎B$,本8,國14,44,B2,B6"],
+["C","謝宛茹","B1上,44,B5,本2,A,B2,B6,本3,B$,B3,國13,本4,B3,L9,L9,本5,視訊K8,B3,本6,本7,B$,基礎B5,B2,本8,外B2,B1上,L1,本1,B3,B1下"],
+["D","沈嘉翔","本1,L1,B1下,本2,本3,B1上,外B2,B5,本4,B1上,國13,B$,B2,本5,44,B6,本6,44,B3,B6,本7,L1,基礎44,B3,本8,B1下,B$,L9,本1,外B2"],
+["A","李欣","國13,本1,外B2,B$,44,本2,B1下,B7,本3,本4,B2,B5,B1上,外B2,本5,B7,B1下,本6,44,B3,B1下,本7,本8,基礎B5,L1,L9,本1,L1,B$,本2"],
+["B","林軒弘","L1,外B2,本2,B1下,B5,B7,本3,國13,B1上,B$,本4,B6,B7,B2,本5,B1下,L1,L9,本6,44,外B2,B3,本8,本8,基礎B5,B6,本1,外B2,44,國補3"],
+["C","賴姿伶","B3,B1下,課B7,本2,B$,A,本3,B2,B3,B5,外B2,本4,B6,44,B3,本5,B1上,B6,B7,本6,本7,國13,本8,基礎B6,B2,L1,B1下,本1,B5,B3"],
+["D","蔡宗樺","本1,本2,國13,44,B1下,本3,B3,L1,本4,外B2,B3,B7,B$,本5,B2,L1,本6,B5,L9,L9,L9,本7,基礎B$,B1上,本8,外B2,44,B1上,本1,B$"],
+["A","黃貽靖","B$,本1,A,B2,L9,本2,B1上,44,KA,本3,B1下,本4,本5,L0,月會B5,國13,B2,本6,B1上,B7,B3,本7,B1上,L1,基礎B6,本8,外B2,國14,L1,本1"],
+["B","高玉嵐","B5,B7,本1,課B6,本2,B6,國13,本3,L1,B6,本4,44,本5,B1上,本6,B2,B$,本7,B1下,外B2,B6,L9,本8,外B2,B1下,B3,本1,B2,B6,B1上"],
+["C","何祐銓","B1下,B5,B6,本2,外B2,B$,B5,本3,外B2,44,L9,本4,本5,國13,外B2,本6,B5,B1下,L1,B8,本7,B1下,國補4,本8,基礎44,B$,B2,本1,國補5,L1"],
+["D","林雅雯","B6,本1,L1,外B2,本2,B3,B$,國13,本3,本4,B5,B1下,44,本5,L1,44,本6,B7,外B2,B1上,本7,基礎B$,B1下,B2,本8,L9,L9,A,本1,B2"],
+["A","麥嘉琪","B7,B6,本1,L1,B1上,本2,44,B1上,B2,L1,本3,本4,本5,國13,L9,L9,L9,本6,B5,B2,44,本7,基礎B5,B1下,L9,本8,B1上,B$,外B2,本1"],
+["D","孟憲鴻","本1,國13,B1上,L9,本2,休,休,本3,本4,B2,44,B1上,本5,L1,月會B$,外B2,本6,B2,B$,B1下,本7,基礎B2,L9,L9,L9,本8,L9,L9,休,L9"],
+["B","李玉聖","L9,L9,L9,本2,本3,L9,L9,L9,L9,L9,本4,L9,L9,L9,本5,L9,L9,L9,本6,L9,L9,L9,本7,L2基礎,國13,本8,本1,A,L9,L9"],
+];
+const CODES1=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","L1","45上","45下","L9","K8"];
+const CODES2=["B1上","B1下","B2","外B2","B3","B$","B5","B6","B7","B8","44","L1","L9"];
+const TRAIN1={3:[["RCI","朱韋任"]],4:[["獺祭","陳怡伃"]],11:[["CHOYA","陳貢鈴"]],15:[["部門月會","李承屏、陳芷琳"]],16:[["Dunhill","游志士"]],17:[["視訊","黃安祺"],["Dunhill","吳佩珊"]],30:[["Suntory","陳雨彤"]]};
+const TRAIN2={3:[["RCI","賴姿伶"]],4:[["獺祭","高玉嵐"]],11:[["CHOYA","張語昕"]],16:[["Dunhill","林軒弘"]]};
+
+function parse(raw){let mark="",b=raw;
+  let p=b.match(/^(課|月會|視訊)/); if(p){mark+=p[1];b=b.slice(p[1].length);}
+  let s=b.match(/(課|月會|視訊)$/); if(s){mark+=s[1];b=b.slice(0,-s[1].length);}
+  return {base:b,mark};}
+function tmap(TR,d){const m={};(TR[d]||[]).forEach(t=>t[1].split("、").forEach(n=>m[n]=t[0]));return m;}
+function cls(c){if(c[0]==="外")return"cX";if(c[0]==="T")return"cT";if(c[0]==="B")return"cB";if(c[0]==="4")return"c4";if(c[0]==="L")return"cL";if(c[0]==="K")return"cX";return"";}
+function group(R,CODES,d,tm){const map={};CODES.forEach(c=>map[c]=[]);const other={};
+  R.forEach(p=>{const raw=(p[2].split(",")[d-1]||"").trim();
+    if(!raw||raw==="休"){return;}
+    const {base,mark}=parse(raw);const ann=mark||tm[p[1]]||"";
+    const it={name:p[1],grp:p[0],ann};
+    if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
+  return {map,other};}
+function reportText(R,CODES,d,tm){const g=group(R,CODES,d,tm);const lines=[`${MONTH}/${d}${R===R1?"一組":"二組"}點名`,""];
+  CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return; if(c==="B8"&&!g.map[c].length)return;
+    const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")).join("、");lines.push(`${c}：${nm||"沒有"}`);});
+  return lines.join("\n");}
+function renderCol(R,CODES,d,tm,el){const g=group(R,CODES,d,tm);let h="";
+  CODES.forEach(c=>{const L=g.map[c]; if((c==="K8"||c==="B8")&&!L.length)return;
+    const nm=L.length?L.map(x=>`${x.name}${x.ann?`<span class=mk>（${x.ann}）</span>`:""}`).join("、"):`<span class=none>沒有</span>`;
+    h+=`<div class=line><b class="${cls(c)}">${c}</b> ${nm}</div>`;});
+  const ok=Object.keys(g.other).sort();
+  if(ok.length){h+=`<div class=oh>其他</div>`;ok.forEach(c=>{h+=`<div class=o>${c}：${g.other[c].join("、")}</div>`;});}
+  el.innerHTML=h;}
 
 const datesEl=document.getElementById("dates");
 WD.forEach(w=>{const e=document.createElement("div");e.className="wk"+(w==="六"?" sat":w==="日"?" sun":"");e.textContent=w;datesEl.appendChild(e);});
-for(let d=1;d<=NDAYS;d++){
-  const cell=document.createElement("div");const w=wd(d);
-  cell.className="d"+(w==="六"?" sat":w==="日"?" sun":"");
-  cell.innerHTML=`<span class="num">${d}</span><span class="wd">${w}</span>`;
-  cell.onclick=()=>select(d,cell); datesEl.appendChild(cell);
-}
-function select(d,cell){
-  document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));
-  cell.classList.add("active");
+for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
+  c.className="d"+(w==="六"?" sat":w==="日"?" sun":"");
+  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>`;
+  c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
+let curD=null;
+function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
   document.getElementById("title").textContent=`${YM} ${d}日（${wd(d)}）`;
-  const {map,other}=groups(d);
-  const tm=trainMap(d);
-  document.getElementById("report").value=reportText(d,map);
-  let html="";
-  CODES.forEach(c=>{const list=map[c]; if(c==="K8"&&!list.length)return;
-    html+=`<div class="grp ${cls(c)}"><div class="grp-h"><span class="code">${c}</span><span class="cnt">${list.length?list.length+" 人":""}</span></div><div class="grp-b">`;
-    html+= list.length? list.map(x=>{const a=x.mark||tm[x.name]||"";return `<span class="name">${x.name}<span class="tag">${x.grp}</span>${a?`<span class="mk">（${a}）</span>`:""}</span>`;}).join("") : `<span class="none">沒有</span>`;
-    html+=`</div></div>`;});
-  const ok=Object.keys(other).sort();
-  if(ok.length){ html+=`<div class="sec-h">其他（本班/國補/A/事…）</div>`;
-    ok.forEach(c=>{const list=other[c];
-      html+=`<div class="grp"><div class="grp-h"><span class="code" style="color:#8b949e">${c}</span><span class="cnt">${list.length} 人</span></div><div class="grp-b">`;
-      html+=list.map(x=>`<span class="name">${x.name}<span class="tag">${x.grp}</span>${tm[x.name]?`<span class="mk">（${tm[x.name]}）</span>`:""}</span>`).join("")+`</div></div>`;});}
-  document.getElementById("out").innerHTML=html;
-}
-document.getElementById("title").textContent="請點選日期";
+  renderCol(R1,CODES1,d,tmap(TRAIN1,d),document.getElementById("c1"));
+  renderCol(R2,CODES2,d,tmap(TRAIN2,d),document.getElementById("c2"));}
+function copyG(g){if(!curD){return;}
+  const txt=g===1?reportText(R1,CODES1,curD,tmap(TRAIN1,curD)):reportText(R2,CODES2,curD,tmap(TRAIN2,curD));
+  const ta=document.getElementById("report");ta.value=txt;ta.style.left="0";ta.focus();ta.select();ta.setSelectionRange(0,99999);
+  try{document.execCommand("copy")}catch(e){} if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>{});
+  ta.blur();ta.style.left="-9999px";
+  const b=document.querySelectorAll(".cp")[g-1];const o=b.textContent;b.textContent="已複製 ✓";setTimeout(()=>b.textContent=o,1500);}
 </script>
 </body>
 </html>
