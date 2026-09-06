@@ -14,6 +14,7 @@
   .wk.sat{color:#6ea8fe}.wk.sun{color:#ff7b72}
   .d{background:#161b22;border:1px solid #30363d;border-radius:7px;padding:7px 0;text-align:center;font-size:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px}
   .d .num{font-weight:600}.d .wd{font-size:9px;color:#8b949e}
+  .d .hol{font-size:9px;color:#f0b429;font-weight:600;margin-top:1px;line-height:1}
   .d.sat .wd{color:#6ea8fe}.d.sun .wd{color:#ff7b72}
   .d.active{background:#1f6feb;border-color:#1f6feb}.d.active .wd{color:#cfe0ff}
   #title{font-size:15px;font-weight:600;margin:4px 0 8px;text-align:center}
@@ -52,6 +53,7 @@
 <script>
 const MONTH=9,NDAYS=30,YM="115年9月";
 const WD=["二","三","四","五","六","日","一"];
+const HOLIDAYS={25:"中秋",28:"教師節"};
 const wd=d=>WD[(d-1)%7];
 
 const R1=[
@@ -111,7 +113,7 @@ function group(R,CODES,d,tm){const map={};CODES.forEach(c=>map[c]=[]);const othe
   R.forEach(p=>{let raw=(p[2].split(",")[d-1]||"").trim();
     if(!raw||raw==="休"){return;}
     raw=raw.replace(/基礎/g,"");
-    const {base,mark}=parse(raw);const ann=mark||tm[p[1]]||"";
+    const {base,mark}=parse(raw);const ann=mark?mark:(tm[p[1]]?"上課"+tm[p[1]]:"");
     const it={name:p[1],grp:p[0],ann};
     if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
   return {map,other};}
@@ -131,7 +133,7 @@ const datesEl=document.getElementById("dates");
 WD.forEach(w=>{const e=document.createElement("div");e.className="wk"+(w==="六"?" sat":w==="日"?" sun":"");e.textContent=w;datesEl.appendChild(e);});
 for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
   c.className="d"+(w==="六"?" sat":w==="日"?" sun":"");
-  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>`;
+  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
   c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
 let curD=null;
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
