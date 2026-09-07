@@ -5,48 +5,67 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>營三部二期入境 · 點名</title>
 <style>
+  :root{
+    --bg:#0f131a;--surf:#161c26;--line:#28313e;--faint:#1f2732;
+    --tx:#e8edf3;--mut:#8b95a4;--dim:#5a6577;
+    --amber:#e6ab4d;--sat:#68a6ff;--sun:#ff8080;--sel:#2d6cf0;--ok:#2f9e5e;
+    --cT:#63c1e6;--cB:#74d3a0;--c4:#b69be8;--cL:#e3aa63;--cX:#ec8b7e;
+  }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{margin:0;background:#0d1117;color:#e6edf3;font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;padding:10px 8px 40px}
-  h1{font-size:17px;margin:4px 0 2px;text-align:center}
-  .sub{text-align:center;color:#8b949e;font-size:12px;margin-bottom:8px}
-  .dates{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px}
-  .wk{text-align:center;font-size:11px;color:#8b949e}
-  .wk.sat{color:#6ea8fe}.wk.sun{color:#ff7b72}
-  .d{background:#161b22;border:1px solid #30363d;border-radius:7px;padding:7px 0;text-align:center;font-size:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px}
-  .d .num{font-weight:600}.d .wd{font-size:9px;color:#8b949e}
-  .d .hol{font-size:9px;color:#f0b429;font-weight:600;margin-top:1px;line-height:1}
-  .d.sat .wd{color:#6ea8fe}.d.sun .wd{color:#ff7b72}
-  .d.active{background:#1f6feb;border-color:#1f6feb}.d.active .wd{color:#cfe0ff}
-  #title{font-size:15px;font-weight:600;margin:4px 0 8px;text-align:center}
-  .btns{display:flex;gap:8px;margin-bottom:10px}
-  .cp{flex:1;padding:11px;font-size:14px;font-weight:600;color:#fff;background:#238636;border:none;border-radius:9px;cursor:pointer}
-  .cp:active{background:#2ea043}
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .col{border:1px solid #30363d;border-radius:10px;overflow:hidden}
-  .colh{background:#1f2937;color:#fff;font-weight:700;text-align:center;padding:7px;font-size:14px}
-  .colb{padding:6px 8px}
-  .line{font-size:13px;line-height:1.5;padding:2px 0;border-bottom:1px solid #21262d}
-  .line b{display:inline-block;min-width:34px;font-weight:700}
-  .none{color:#484f58}
-  .mk{color:#f0c674;font-size:11px}
-  .oh{font-size:11px;color:#8b949e;margin:6px 0 2px;letter-spacing:1px}
-  .o{font-size:12px;color:#8b949e;line-height:1.5}
-  .cT{color:#79c0ff}.cB{color:#7ee787}.c4{color:#d2a8ff}.cL{color:#ffa657}.cX{color:#ff7b72}
+  body{margin:0;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;
+    font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;padding:14px 10px 48px}
+  header{text-align:center;margin-bottom:12px}
+  h1{font-size:17px;font-weight:700;letter-spacing:.5px;margin:0}
+  .sub{color:var(--mut);font-size:12px;margin-top:3px}
+  .dates{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:14px}
+  .wk{text-align:center;font-size:11px;color:var(--dim);padding-bottom:2px}
+  .wk.sat{color:var(--sat)}.wk.sun{color:var(--sun)}
+  .d{background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:6px 0 5px;
+    cursor:pointer;display:flex;flex-direction:column;align-items:center;transition:background .12s,border-color .12s}
+  .d .num{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .d .wd{font-size:9px;color:var(--dim);margin-top:1px}
+  .d .hol{font-size:8.5px;color:var(--amber);font-weight:700;margin-top:2px;line-height:1}
+  .d.sat .wd{color:var(--sat)}.d.sun .wd{color:var(--sun)}
+  .d.active{background:var(--sel);border-color:var(--sel)}
+  .d.active .num,.d.active .wd{color:#fff}.d.active .hol{color:#ffe0a3}
+  .head{text-align:center;margin:2px 0 12px}
+  .head .big{font-size:20px;font-weight:700}
+  .head .big small{font-size:13px;font-weight:500;color:var(--mut);margin-left:6px}
+  .head .chip{display:inline-block;margin-left:8px;font-size:11px;font-weight:700;color:#1a1206;
+    background:var(--amber);border-radius:5px;padding:2px 7px;vertical-align:middle}
+  .head.empty{color:var(--mut);font-size:14px;font-weight:400}
+  .btns{display:flex;gap:8px;margin-bottom:14px}
+  .cp{flex:1;padding:12px 8px;font-size:14px;font-weight:600;color:#fff;background:var(--ok);
+    border:none;border-radius:10px;cursor:pointer;letter-spacing:.3px}
+  .cp:active{filter:brightness(1.12)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grph{font-size:14px;font-weight:700;padding-bottom:5px;margin-bottom:4px;border-bottom:2px solid var(--line)}
+  .g1 .grph{border-color:var(--cT)}.g2 .grph{border-color:var(--cB)}
+  .row{display:flex;gap:7px;padding:4px 1px;font-size:12.5px;line-height:1.45;border-bottom:1px solid var(--faint)}
+  .code{flex:0 0 40px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.2px}
+  .who{flex:1;min-width:0}
+  .none{color:var(--dim)}
+  .mk{color:var(--amber);font-size:11px}
+  .sub-h{font-size:11px;color:var(--dim);margin:8px 0 3px;font-weight:600}
+  .orow{font-size:12px;color:var(--mut);line-height:1.5;padding:1px 0}
+  .cT{color:var(--cT)}.cB{color:var(--cB)}.c4{color:var(--c4)}.cL{color:var(--cL)}.cX{color:var(--cX)}
   #report{position:absolute;left:-9999px}
 </style>
 </head>
 <body>
-  <h1>營三部二期入境（夜）· 點名</h1>
-  <div class="sub">115年9月 · 點日期 → 左一組 右二組</div>
+  <header>
+    <h1>營三部二期入境 · 夜班點名</h1>
+    <div class="sub">115年9月</div>
+  </header>
   <div class="dates" id="dates"></div>
-  <div id="title">請點選日期</div>
+  <div class="head empty" id="title">選一個日期，看當天兩組站位</div>
   <div class="btns">
-    <button class="cp" onclick="copyG(1)">複製一組</button>
-    <button class="cp" onclick="copyG(2)">複製二組</button>
+    <button class="cp" onclick="copyG(1)">複製一組回報</button>
+    <button class="cp" onclick="copyG(2)">複製二組回報</button>
   </div>
   <div class="cols">
-    <div class="col"><div class="colh">一組</div><div class="colb" id="c1"></div></div>
-    <div class="col"><div class="colh">二組</div><div class="colb" id="c2"></div></div>
+    <div class="grp g1"><div class="grph" style="color:var(--cT)">一組</div><div id="c1"></div></div>
+    <div class="grp g2"><div class="grph" style="color:var(--cB)">二組</div><div id="c2"></div></div>
   </div>
   <textarea id="report"></textarea>
 
@@ -124,9 +143,9 @@ function reportText(R,CODES,d,tm){const g=group(R,CODES,d,tm);const lines=[`${MO
 function renderCol(R,CODES,d,tm,el){const g=group(R,CODES,d,tm);let h="";
   CODES.forEach(c=>{const L=g.map[c]; if(c==="K8"&&!L.length)return;
     const nm=L.length?L.map(x=>`${x.name}${x.ann?`<span class=mk>（${x.ann}）</span>`:""}`).join("、"):`<span class=none>🈚️</span>`;
-    h+=`<div class=line><b class="${cls(c)}">${c}</b> ${nm}</div>`;});
+    h+=`<div class=row><span class="code ${cls(c)}">${c}</span><span class=who>${nm}</span></div>`;});
   const ok=Object.keys(g.other).sort();
-  if(ok.length){h+=`<div class=oh>其他</div>`;ok.forEach(c=>{h+=`<div class=o>${c}：${g.other[c].join("、")}</div>`;});}
+  if(ok.length){h+=`<div class=sub-h>休假・其他</div>`;ok.forEach(c=>{h+=`<div class=orow>${c}：${g.other[c].join("、")}</div>`;});}
   el.innerHTML=h;}
 
 const datesEl=document.getElementById("dates");
@@ -137,7 +156,8 @@ for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
   c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
 let curD=null;
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
-  document.getElementById("title").textContent=`${YM} ${d}日（${wd(d)}）`;
+  const t=document.getElementById("title");t.className="head";
+  t.innerHTML=`<span class=big>9月${d}日<small>週${wd(d)}</small></span>${HOLIDAYS[d]?`<span class=chip>${HOLIDAYS[d]}</span>`:""}`;
   renderCol(R1,CODES1,d,tmap(TRAIN1,d),document.getElementById("c1"));
   renderCol(R2,CODES2,d,tmap(TRAIN2,d),document.getElementById("c2"));}
 function copyG(g){if(!curD){return;}
