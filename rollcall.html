@@ -28,6 +28,9 @@
   .d.sat .wd{color:var(--sat)}.d.sun .wd{color:var(--sun)}
   .d.active{background:var(--sel);border-color:var(--sel)}
   .d.active .num,.d.active .wd{color:#fff}.d.active .hol{color:#ffe0a3}
+  .d.today:not(.active){box-shadow:inset 0 0 0 2px var(--sel)}
+  .d .today-t{font-size:8.5px;color:#7fb0ff;font-weight:700;line-height:1;margin-top:2px}
+  .d.active .today-t{color:#fff}
   .head{text-align:center;margin:2px 0 12px}
   .head .big{font-size:20px;font-weight:700}
   .head .big small{font-size:13px;font-weight:500;color:var(--mut);margin-left:6px}
@@ -70,7 +73,7 @@
   <textarea id="report"></textarea>
 
 <script>
-const MONTH=9,NDAYS=30,YM="115年9月";
+const MONTH=9,NDAYS=30,YM="115年9月",YEAR=2026;
 const WD=["二","三","四","五","六","日","一"];
 const HOLIDAYS={25:"中秋",28:"教師節"};
 const wd=d=>WD[(d-1)%7];
@@ -149,10 +152,11 @@ function renderCol(R,CODES,d,tm,el){const g=group(R,CODES,d,tm);let h="";
   el.innerHTML=h;}
 
 const datesEl=document.getElementById("dates");
+const _t=new Date();const TODAY=(_t.getFullYear()===YEAR&&_t.getMonth()+1===MONTH)?_t.getDate():null;
 WD.forEach(w=>{const e=document.createElement("div");e.className="wk"+(w==="六"?" sat":w==="日"?" sun":"");e.textContent=w;datesEl.appendChild(e);});
 for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
-  c.className="d"+(w==="六"?" sat":w==="日"?" sun":"");
-  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
+  c.className="d"+(w==="六"?" sat":w==="日"?" sun":"")+(d===TODAY?" today":"");
+  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${d===TODAY?`<span class=today-t>今天</span>`:""}${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
   c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
 let curD=null;
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
