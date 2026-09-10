@@ -57,25 +57,25 @@
 </head>
 <body>
   <header>
-    <h1>營三部二期入境 · 夜班點名</h1>
-    <div class="sub">115年9月</div>
+    <h1>🌙 營三部二期入境 · 夜班點名</h1>
+    <div class="sub">115年9月 ✈️🛂</div>
   </header>
   <div class="dates" id="dates"></div>
-  <div class="head empty" id="title">選一個日期，看當天兩組站位</div>
+  <div class="head empty" id="title">👆 選一個日期，看當天兩組站位</div>
   <div class="btns">
-    <button class="cp" onclick="copyG(1)">複製一組回報</button>
-    <button class="cp" onclick="copyG(2)">複製二組回報</button>
+    <button class="cp" onclick="copyG(1)">📋 複製一組回報</button>
+    <button class="cp" onclick="copyG(2)">📋 複製二組回報</button>
   </div>
   <div class="cols">
-    <div class="grp g1"><div class="grph" style="color:var(--cT)">一組</div><div id="c1"></div></div>
-    <div class="grp g2"><div class="grph" style="color:var(--cB)">二組</div><div id="c2"></div></div>
+    <div class="grp g1"><div class="grph" style="color:var(--cT)">🔵 一組</div><div id="c1"></div></div>
+    <div class="grp g2"><div class="grph" style="color:var(--cB)">🟢 二組</div><div id="c2"></div></div>
   </div>
   <textarea id="report"></textarea>
 
 <script>
 const MONTH=9,NDAYS=30,YM="115年9月",YEAR=2026;
 const WD=["二","三","四","五","六","日","一"];
-const HOLIDAYS={25:"中秋",28:"教師節"};
+const HOLIDAYS={25:"🎑中秋",28:"🍎教師節"};
 const wd=d=>WD[(d-1)%7];
 
 const R1=[
@@ -143,12 +143,13 @@ function reportText(R,CODES,d,tm){const g=group(R,CODES,d,tm);const lines=[`${MO
   CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return;
     const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")).join("、");lines.push(`${c}：${nm||"🈚️"}`);});
   return lines.join("\n");}
+function annEmo(a){if(!a)return"";if(a.indexOf("上課")===0||a==="課")return"📚";if(a==="視訊")return"📹";if(a==="月會")return"📝";if(a==="基礎")return"🎓";return"📌";}
 function renderCol(R,CODES,d,tm,el){const g=group(R,CODES,d,tm);let h="";
   CODES.forEach(c=>{const L=g.map[c]; if(c==="K8"&&!L.length)return;
-    const nm=L.length?L.map(x=>`${x.name}${x.ann?`<span class=mk>（${x.ann}）</span>`:""}`).join("、"):`<span class=none>🈚️</span>`;
+    const nm=L.length?L.map(x=>`${x.name}${x.ann?`<span class=mk>（${annEmo(x.ann)}${x.ann}）</span>`:""}`).join("、"):`<span class=none>🈚️</span>`;
     h+=`<div class=row><span class="code ${cls(c)}">${c}</span><span class=who>${nm}</span></div>`;});
   const ok=Object.keys(g.other).sort();
-  if(ok.length){h+=`<div class=sub-h>休假・其他</div>`;ok.forEach(c=>{h+=`<div class=orow>${c}：${g.other[c].join("、")}</div>`;});}
+  if(ok.length){h+=`<div class=sub-h>🌴 休假・其他</div>`;ok.forEach(c=>{h+=`<div class=orow>${c}：${g.other[c].join("、")}</div>`;});}
   el.innerHTML=h;}
 
 const datesEl=document.getElementById("dates");
@@ -156,7 +157,7 @@ const _t=new Date();const TODAY=(_t.getFullYear()===YEAR&&_t.getMonth()+1===MONT
 WD.forEach(w=>{const e=document.createElement("div");e.className="wk"+(w==="六"?" sat":w==="日"?" sun":"");e.textContent=w;datesEl.appendChild(e);});
 for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
   c.className="d"+(w==="六"?" sat":w==="日"?" sun":"")+(d===TODAY?" today":"");
-  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${d===TODAY?`<span class=today-t>今天</span>`:""}${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
+  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${d===TODAY?`<span class=today-t>📍今天</span>`:""}${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
   c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
 let curD=null;
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
