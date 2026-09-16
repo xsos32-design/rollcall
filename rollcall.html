@@ -61,7 +61,14 @@
   .nm{cursor:pointer;border-radius:4px;padding:0 1px}
   .nm.on{color:#8ee6ad;font-weight:700}
   .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
-  .chk{color:#4fd08a;font-weight:800;margin-left:2px}
+  .chk{color:#4fd08a}
+  .ic{width:15px;height:15px;vertical-align:-3px;flex:none;display:inline-block}
+  h1 .ic{width:17px;height:17px;vertical-align:-3px;margin-right:6px;color:var(--mut)}
+  .cp .ic{width:16px;height:16px;margin-right:6px}
+  .cwarn .ic{width:13px;height:13px;vertical-align:-2px;margin-right:5px}
+  svg.chk{width:14px;height:14px;vertical-align:-2px;color:#4fd08a}
+  .mk .ic{width:11px;height:11px;vertical-align:-1px;margin-right:2px}
+  .sub-h .ic{width:12px;height:12px;vertical-align:-2px;margin-right:4px}
   .hint{text-align:center;color:var(--dim);font-size:11px;margin:-6px 0 8px}
   .clrwrap{text-align:center;margin-bottom:13px}
   .clr{background:none;border:1px solid var(--line);color:var(--mut);font-size:12px;padding:6px 16px;border-radius:8px;cursor:pointer}
@@ -73,21 +80,22 @@
   .cT{color:var(--cT)}.cB{color:var(--cB)}.c4{color:var(--c4)}.cL{color:var(--cL)}.cX{color:var(--cX)}
   #report{position:absolute;left:-9999px}
 </style>
+<!-- icons: Lucide (ISC License) https://lucide.dev -->
 </head>
 <body>
   <div class="credit">
     <div class="cname">製作人 · 朱韋任</div>
-    <div class="cwarn">請不要未經同意就轉用、散布</div>
+    <div class="cwarn"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>請不要未經同意就轉用、散布</div>
   </div>
   <header>
-    <h1>營三部二期入境 · 夜班點名</h1>
+    <h1><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>營三部二期入境 · 夜班點名</h1>
     <div class="sub">115年9月</div>
   </header>
   <div class="dates" id="dates"></div>
   <div class="head empty" id="title">👆 選一個日期，看當天兩組站位</div>
   <div class="btns">
-    <button class="cp" onclick="copyG(1)">複製一組回報</button>
-    <button class="cp" onclick="copyG(2)">複製二組回報</button>
+    <button class="cp" onclick="copyG(1)"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>複製一組回報</button>
+    <button class="cp" onclick="copyG(2)"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>複製二組回報</button>
   </div>
   <div class="hint">點名字＝已到，複製會一併帶入</div>
   <div class="clrwrap"><button class="clr" onclick="clearDay()">清除本日勾選</button></div>
@@ -174,13 +182,15 @@ function reportText(R,CODES,d,tm,gnum){const g=group(R,CODES,d,tm);const lines=[
   CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return;
     const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")+(CK[ckKey(d,gnum,x.name)]?"✓":"")).join("、");lines.push(`${c}：${nm||"無"}`);});
   return lines.join("\n");}
+const ICHK='<svg class="ic chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+const ICAP='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>';
 function renderCol(R,CODES,d,tm,el,gnum){const g=group(R,CODES,d,tm);let h="";
   CODES.forEach(c=>{const L=g.map[c]; if(c==="K8"&&!L.length)return;
     const nm=L.length?L.map(x=>{const on=!!CK[ckKey(d,gnum,x.name)];
-      return `<span class="nm${on?' on':''}" onclick="toggle(${d},${gnum},'${x.name}')">${x.name}${x.ann?`<span class=mk>（${x.ann}）</span>`:""}${on?' <span class=chk>✓</span>':''}</span>`;}).join("、"):`<span class=none>—</span>`;
+      return `<span class="nm${on?' on':''}" onclick="toggle(${d},${gnum},'${x.name}')">${x.name}${x.ann?`<span class=mk>${ICAP}（${x.ann}）</span>`:""}${on?" "+ICHK:""}</span>`;}).join("、"):`<span class=none>—</span>`;
     h+=`<div class=row><span class="code ${cls(c)}">${c}</span><span class=who>${nm}</span></div>`;});
   const ok=Object.keys(g.other).sort();
-  if(ok.length){h+=`<div class=sub-h>休假・其他</div>`;ok.forEach(c=>{h+=`<div class=orow>${c}：${g.other[c].join("、")}</div>`;});}
+  if(ok.length){h+=`<div class=sub-h><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>休假・其他</div>`;ok.forEach(c=>{h+=`<div class=orow>${c}：${g.other[c].join("、")}</div>`;});}
   el.innerHTML=h;}
 
 const datesEl=document.getElementById("dates");
