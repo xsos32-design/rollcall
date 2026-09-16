@@ -174,7 +174,6 @@ function reportText(R,CODES,d,tm,gnum){const g=group(R,CODES,d,tm);const lines=[
   CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return;
     const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")+(CK[ckKey(d,gnum,x.name)]?"✓":"")).join("、");lines.push(`${c}：${nm||"無"}`);});
   return lines.join("\n");}
-function annEmo(a){if(!a)return"";if(a.indexOf("上課")===0||a==="課")return"📚";if(a==="視訊")return"📹";if(a==="月會")return"📝";if(a==="基礎")return"🎓";return"📌";}
 function renderCol(R,CODES,d,tm,el,gnum){const g=group(R,CODES,d,tm);let h="";
   CODES.forEach(c=>{const L=g.map[c]; if(c==="K8"&&!L.length)return;
     const nm=L.length?L.map(x=>{const on=!!CK[ckKey(d,gnum,x.name)];
