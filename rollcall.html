@@ -218,14 +218,14 @@ function group(R,CODES,d,tm){const map={};CODES.forEach(c=>map[c]=[]);const othe
   return {map,other};}
 function reportText(R,CODES,d,tm,gnum){const g=group(R,CODES,d,tm);const lines=[`${MONTH}/${d}${R===R1?"一組":"二組"}點名`,""];
   CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return;
-    const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")+(CK[ckKey(d,gnum,x.name)]?"✓":"")).join("、");lines.push(`${c}：${nm||"🈚️"}`);});
+    const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")+(CK[ckKey(d,gnum,x.name)]?"✅":"")).join("、");lines.push(`${c}：${nm||"🈚️"}`);});
   return lines.join("\n");}
 const ICHK='<svg class="ic chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
 const ICAP='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>';
 function renderCol(R,CODES,d,tm,el,gnum){const g=group(R,CODES,d,tm);let h="";
   CODES.forEach(c=>{const L=g.map[c]; if(c==="K8"&&!L.length)return;
     const nm=L.length?L.map(x=>{const on=!!CK[ckKey(d,gnum,x.name)];
-      return `<span class="nm${on?' on':''}" onclick="toggle(${d},${gnum},'${x.name}')">${x.name}${x.ann?`<span class=mk>${ICAP}（${x.ann}）</span>`:""}${on?" "+ICHK:""}</span>`;}).join("、"):`<span class=none>🈚️</span>`;
+      return `<span class="nm${on?' on':''}" onclick="toggle(${d},${gnum},'${x.name}')">${x.name}${x.ann?`<span class=mk>${ICAP}（${x.ann}）</span>`:""}${on?" ✅":""}</span>`;}).join("、"):`<span class=none>🈚️</span>`;
     h+=`<div class=row><span class="code ${cls(c)}">${c}</span><span class=who>${nm}</span></div>`;});
   const ok=Object.keys(g.other).sort();
   if(ok.length){h+=`<div class=sub-h><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>休假・其他</div>`;ok.forEach(c=>{h+=`<div class=orow>${c}：${g.other[c].join("、")}</div>`;});}
