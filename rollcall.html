@@ -101,6 +101,61 @@
   .orow{font-size:12px;color:var(--mut);line-height:1.5;padding:1px 0}
   .cT{color:#93d6f0;background:rgba(99,193,230,.13)}.cB{color:#93e4b6;background:rgba(116,211,160,.13)}.c4{color:#c9b4f0;background:rgba(182,155,232,.14)}.cL{color:#ecc082;background:rgba(227,170,99,.14)}.cX{color:#f2a99e;background:rgba(236,139,126,.14)}
   #report{position:absolute;left:-9999px}
+
+  /* ===== 航班板同款 (2140青綠 / 2153洋紅) ===== */
+  :root{--t40:#2ee6c8;--t53:#ff2d6e;--ink:#eafdff}
+  body{background:
+    radial-gradient(60% 40% at 18% -2%,rgba(46,230,200,.16),transparent 60%),
+    radial-gradient(60% 40% at 85% -2%,rgba(255,45,110,.14),transparent 60%),
+    #000;font-weight:600}
+  body::before{display:none}
+  .credit{border:1px solid rgba(46,230,200,.45);background:#06100e;border-radius:16px;
+    box-shadow:0 0 26px rgba(46,230,200,.18)}
+  .cname{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:900;letter-spacing:.14em;
+    background:linear-gradient(90deg,#5ff6df,#2ee6c8 45%,#ff6f98)!important;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 18px rgba(46,230,200,.3)}
+  .cwarn{color:var(--t53)!important;font-weight:800}
+  h1{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800;letter-spacing:.05em;color:var(--ink);text-shadow:0 0 12px rgba(46,230,200,.3)}
+  h1 .ic{color:var(--t40)}
+  .sub{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:700;letter-spacing:.2em;color:#7af0dd}
+  header::after{background:linear-gradient(90deg,transparent,var(--t40),var(--t53),transparent);box-shadow:0 0 10px var(--t40)}
+  .wk{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:700}
+  .d{background:#07100f;border:1px solid rgba(46,230,200,.22);border-radius:12px}
+  .d .num{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800;font-size:17px;color:#dffbff}
+  .d .wd{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace}
+  .d.active{background:linear-gradient(160deg,rgba(46,230,200,.4),rgba(46,230,200,.12))!important;border-color:var(--t40)!important;
+    box-shadow:0 0 18px rgba(46,230,200,.6),inset 0 0 12px rgba(46,230,200,.25)!important}
+  .d.active .num{color:#001a16;text-shadow:none}
+  .d.today:not(.active){box-shadow:inset 0 0 0 1px var(--t40),0 0 12px rgba(46,230,200,.4)!important;border-color:var(--t40)}
+  .d .today-t{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;color:var(--t40)}
+  .d.hd{border-color:rgba(255,45,110,.6)!important;box-shadow:0 0 10px rgba(255,45,110,.35)}
+  .d.hd .num,.d.hd .wd,.d.hd .hol{color:var(--t53)!important;text-shadow:0 0 6px rgba(255,45,110,.4)}
+  .d .hol{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800}
+  .head .big{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:900;letter-spacing:.04em;color:var(--ink)!important;background:none!important;text-shadow:0 0 16px rgba(46,230,200,.35)}
+  .head .chip{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800;background:linear-gradient(135deg,#ff3d74,#d61e55)!important}
+  .btns{gap:10px}
+  .cp{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800;letter-spacing:.14em;border-radius:999px!important;border:1px solid rgba(255,255,255,.18)!important}
+  .cp:nth-child(1){background:linear-gradient(135deg,#19c9ad,#2ee6c8)!important;color:#00201b!important;box-shadow:0 0 20px rgba(46,230,200,.4)!important}
+  .cp:nth-child(2){background:linear-gradient(135deg,#ff3d74,#d61e55)!important;color:#fff!important;box-shadow:0 0 20px rgba(255,45,110,.4)!important}
+  .clr{border-radius:999px;border-color:rgba(46,230,200,.4);color:#7af0dd;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:700}
+  .cols{gap:12px}
+  .grp{border-radius:18px;background:#05100e!important}
+  .g1{border:1.5px solid var(--t40)!important;box-shadow:0 0 22px rgba(46,230,200,.18),inset 0 0 22px rgba(46,230,200,.05)!important}
+  .g2{border:1.5px solid var(--t53)!important;box-shadow:0 0 22px rgba(255,45,110,.18),inset 0 0 22px rgba(255,45,110,.05)!important}
+  .grph{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:900;letter-spacing:.14em;font-size:16px}
+  .g1 .grph{color:var(--t40)!important;border-color:var(--t40)!important;text-shadow:0 0 10px rgba(46,230,200,.5)}
+  .g2 .grph{color:var(--t53)!important;border-color:var(--t53)!important;text-shadow:0 0 10px rgba(255,45,110,.5)}
+  .code{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800;font-size:13px;letter-spacing:.06em;border:1.5px solid currentColor;border-radius:8px;min-width:46px;padding:3px 7px;text-shadow:0 0 6px currentColor}
+  .g1 .code{color:#5ff6df!important;background:rgba(46,230,200,.08)!important}
+  .g2 .code{color:#ff85a6!important;background:rgba(255,45,110,.08)!important}
+  .who{font-weight:800;color:#eafdff}
+  .nm{font-weight:800}
+  .g1 .nm.on{background:rgba(46,230,200,.18)!important;color:#7dffe6!important;box-shadow:0 0 8px rgba(46,230,200,.35)}
+  .g2 .nm.on{background:rgba(255,45,110,.18)!important;color:#ffb3c8!important;box-shadow:0 0 8px rgba(255,45,110,.35)}
+  .mk{color:#ffd166!important;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace}
+  .sub-h{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:700;letter-spacing:.1em}
+  .g1 .sub-h{color:#5ff6df}.g2 .sub-h{color:#ff85a6}
+  .orow{color:#9fb4c4}
+  #emptyArt .cap{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;letter-spacing:.1em;color:#7af0dd}
 </style>
 <!-- icons: Lucide (ISC License) https://lucide.dev -->
 </head>
@@ -111,7 +166,7 @@
   </div>
   <header>
     <h1><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>營三部二期入境 · 夜班點名</h1>
-    <div class="sub">115年10月</div>
+    <div class="sub">115年10月 · 2140 / 2153</div>
   </header>
   <div class="dates" id="dates"></div>
   <div class="head" id="title"></div>
