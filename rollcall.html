@@ -289,8 +289,8 @@ const R2=[
 ["B","羅羽希","本2,病16,病17,病18,本3,病19,病20,國14,本4,病21,病22,病23,本5,病24,病25,病26,本6,病27,病28,國15,本7,病29,病30,本8,無薪,無薪,無薪,無薪,無薪,無薪,無薪"],
 ["B","李玉聖","本2,A,休,休,本3,休,休,休,本4,休,休,本5,本6,國14,國15,本7,休,休,休,休,本8,休,休,休,本1,休,本2,進階T6,休,休,休"],
 ];
-const CODES1=["B1上","B1下","B2","外B2","B3","B$","B5","B6","B7","B8","44","跑5","跑6","L1","L9"];
-const CODES2=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","45上","45下","跑5","跑6","L1","L9"];
+const CODES1=["B1上","B1下","B2","外B2","B3","B$","B5","B6","B7","B8","44","L1","L9"];
+const CODES2=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","45上","45下","L1","L9"];
 const TRAIN1={7:[["NIKKA","沙上智"]],10:[["威士忌·B5","湯文愷、陳泂圖"]],11:[["威士忌·B5","林洧盈、陳芷琳、陳貢鈴"]],12:[["威士忌·北區","黃安祺、吳佩珊、吳慶鴻"]],14:[["視訊會議","湯文愷"],["Glenfarclas","陳芷琳"]],15:[["Davidoff","吳信宜"]],17:[["威士忌·南大","陳怡伃、陳世傑、李承屏、李明翰"]],23:[["部門月會","陳世傑、林洧盈"]],25:[["威士忌·B5","蔡亞璇、朱韋任、游志士"]],26:[["威士忌·B5","吳信宜、陳雨彤、沙上智"]]};
 const TRAIN2={7:[["NIKKA","黃珮筑"]],10:[["威士忌·B5","李欣、孟憲鴻"]],11:[["威士忌·B5","沈嘉翎、麥嘉琪、李郁欣"]],12:[["威士忌·北區","高玉嵐、謝宛茹"]],14:[["視訊會議","高玉嵐"],["Glenfarclas","梁雅棋"]],15:[["Davidoff","陳建吉"]],17:[["威士忌·南大","何祐銓、蔡宗樺"]],23:[["部門月會","黃貽靖、羅貽辰"]],25:[["威士忌·B5","黃珮筑、賴姿伶"]],26:[["威士忌·B5","張語昕、林雅雯、羅貽辰、梁雅棋、陳建吉"]]};
 
@@ -298,7 +298,7 @@ function parse(raw,gnum){let mark="",b=raw;
   let pj=b.match(/^(進階)/); if(pj){mark+="進階";b=b.slice(2);}
   let p=b.match(/^(課|月會|視訊|基礎)/); if(p){mark+=(mark?"・":"")+p[1];b=b.slice(p[1].length);}
   let s=b.match(/(課|月會|視訊|基礎)$/); if(s){mark+=(mark?"・":"")+s[1];b=b.slice(0,-s[1].length);}
-  let md=b.match(/^([1-8])$/); if(md){b="跑"+md[1];}
+  let md=b.match(/^([1-8])$/); if(md){b=(gnum===1?"B":"T")+md[1];mark="跑"+md[1]+(mark?"・"+mark:"");}
   return {base:b,mark};}
 function tmap(TR,d){const m={};(TR[d]||[]).forEach(t=>t[1].split("、").forEach(n=>m[n]=t[0]));return m;}
 const CK=(function(){try{return JSON.parse(localStorage.getItem("ck"+YEAR+"_"+MONTH)||"{}")}catch(e){return {}}})();
@@ -307,7 +307,7 @@ function saveCK(){try{localStorage.setItem("ck"+YEAR+"_"+MONTH,JSON.stringify(CK
 function toggle(d,g,n){const k=ckKey(d,g,n);if(CK[k])delete CK[k];else CK[k]=1;saveCK();rerender();}
 function clearDay(){if(!curD)return;Object.keys(CK).forEach(k=>{if(k.indexOf(curD+"::")===0)delete CK[k]});saveCK();rerender();}
 function rerender(){if(!curD)return;renderCol(R1,CODES1,curD,tmap(TRAIN1,curD),document.getElementById("c1"),1);renderCol(R2,CODES2,curD,tmap(TRAIN2,curD),document.getElementById("c2"),2);}
-function cls(c){if(c[0]==="跑")return"cL";if(c[0]==="外")return"cX";if(c[0]==="T")return"cT";if(c[0]==="B")return"cB";if(c[0]==="4")return"c4";if(c[0]==="L")return"cL";if(c[0]==="K")return"cX";return"";}
+function cls(c){if(c[0]==="外")return"cX";if(c[0]==="T")return"cT";if(c[0]==="B")return"cB";if(c[0]==="4")return"c4";if(c[0]==="L")return"cL";if(c[0]==="K")return"cX";return"";}
 function group(R,CODES,d,tm,gnum){const map={};CODES.forEach(c=>map[c]=[]);const other={};
   R.forEach(p=>{let raw=(p[2].split(",")[d-1]||"").trim();
     if(!raw||raw==="休"){return;}
