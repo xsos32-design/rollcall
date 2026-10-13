@@ -182,6 +182,14 @@
   .cgrid .sh2.sn2{z-index:3}
   .cgrid .z{color:#36504c}
   .cgrid .tot{background:#0e1a18;color:#ffd166;font-weight:800}
+
+  .barwrap{margin-top:6px}
+  .barrow{display:grid;grid-template-columns:58px 1fr 76px;gap:7px;align-items:center;margin:4px 0;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-size:11px}
+  .barrow .bn{color:#eafdff;font-weight:700;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bartrk{height:14px;background:#0b1513;border:1px solid #1c2a28;border-radius:7px;overflow:hidden;position:relative}
+  .barfill{height:100%;border-radius:7px}
+  .barnum{color:#9fb4c4;font-weight:700;font-size:10px;text-align:left;white-space:nowrap}
+  .barnum b{color:#ffd166} .barnum i{color:#ff85a6;font-style:normal}
 </style>
 <!-- icons: Lucide (ISC License) https://lucide.dev -->
 </head>
@@ -341,7 +349,17 @@ function statsHTML(){function tbl(R,C,g,tag){var codes=C.filter(function(c){retu
     days.forEach(function(raw,i){raw=(raw||'').trim();if(!raw||raw==='休')return;var pr=parse(raw,g);if(codes.indexOf(pr.base)>=0){cc[pr.base]=(cc[pr.base]||0)+1;tot++;}});
     body+='<div class=sn2>'+p[1]+'</div>'+codes.map(function(c){return '<div class="'+(cc[c]?'':'z')+'">'+(cc[c]||'·')+'</div>';}).join('')+'<div class=tot>'+tot+'</div>';});
   return '<div class="statt '+(g===1?'c1':'c2')+'">'+tag+'　'+MONTH+'月 · 各符號次數</div><div class=scroll><div class=cgrid style="grid-template-columns:62px repeat('+(codes.length+1)+',31px)">'+head+body+'</div></div>';}
-  return tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組");}
+  function bars(R,C,g,tag){var rows=R.map(function(p){var days=p[2].split(",");var sta=0,run=0,hol=0;
+    days.forEach(function(raw,i){raw=(raw||"").trim();var d=i+1;if(!raw||raw==="休")return;var pr=parse(raw,g);
+      if(C.indexOf(pr.base)>=0){sta++;if(pr.base[0]==="跑")run++;if(HOLIDAYS[d])hol++;}});
+    return {n:p[1],sta:sta,run:run,hol:hol};});
+    var mx=Math.max(1,Math.max.apply(null,rows.map(function(r){return r.sta;})));
+    var col=g===1?"linear-gradient(90deg,#19c9ad,#2ee6c8)":"linear-gradient(90deg,#d61e55,#ff5d7a)";
+    var x='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　站位天數 · 公平性</div><div class=barwrap>';
+    rows.forEach(function(r){var w=Math.round(r.sta/mx*100);
+      x+='<div class=barrow><div class=bn>'+r.n+'</div><div class=bartrk><div class=barfill style="width:'+w+'%;background:'+col+'"></div></div><div class=barnum>'+r.sta+'天 <b>跑'+r.run+'</b> <i>假'+r.hol+'</i></div></div>';});
+    return x+'</div>';}
+  return tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組")+bars(R1,CODES1,1,"一組")+bars(R2,CODES2,2,"二組");}
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
   document.getElementById("emptyArt").style.display="none";document.getElementById("panel").style.display="";
   const t=document.getElementById("title");t.className="head";
