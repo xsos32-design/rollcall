@@ -156,6 +156,23 @@
   .orow{color:#9fb4c4}
   #emptyArt .cap{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;letter-spacing:.1em;color:#7af0dd}
   .cname{color:#eafdff!important;-webkit-text-fill-color:#eafdff!important;background:none!important;text-shadow:0 0 14px rgba(46,230,200,.6),0 0 4px rgba(255,255,255,.5)!important}
+
+  #admBtn{background:#07100f;border:1px solid rgba(255,45,110,.4);color:#ff85a6;border-radius:999px;padding:9px 14px;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap}
+  #gate{display:flex;gap:8px}
+  #pw{flex:1;background:#07100f;border:1px solid rgba(46,230,200,.4);border-radius:999px;color:#eafdff;padding:12px 16px;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-size:18px;letter-spacing:4px;text-align:center;outline:none}
+  #gate button{background:linear-gradient(135deg,#19c9ad,#2ee6c8);color:#00201b;border:none;border-radius:999px;padding:0 20px;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800;cursor:pointer}
+  .statt{font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:900;font-size:15px;letter-spacing:.08em;margin:14px 0 8px;text-align:center}
+  .statt.c1{color:#2ee6c8} .statt.c2{color:#ff5d7a}
+  .sgrid{display:grid;grid-template-columns:1.6fr .8fr .6fr .8fr .8fr .8fr;gap:1px;background:#1c2a28;border:1px solid #1c2a28;border-radius:10px;overflow:hidden;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-size:12px}
+  .sgrid>div{background:#081110;padding:6px 4px;text-align:center;color:#cfe}
+  .sgrid .sh{background:#0e1a18;color:#7af0dd;font-weight:800}
+  .sgrid .sn{text-align:left;padding-left:8px;color:#eafdff;font-weight:700}
+  #dutyWrap iframe{width:100%;height:420px;border:1px solid rgba(46,230,200,.3);border-radius:12px;background:#000}
+
+  .modal{display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.85);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:14px}
+  .mbox{width:100%;max-width:460px;max-height:88vh;overflow:auto;background:#060f0e;border:1.5px solid rgba(46,230,200,.5);border-radius:18px;padding:16px;box-shadow:0 0 36px rgba(46,230,200,.25)}
+  .mclose{width:100%;margin-top:14px;padding:12px;border-radius:999px;border:1px solid rgba(46,230,200,.45);background:transparent;color:#5ff6df;font-family:ui-monospace,"SF Mono","Menlo","Consolas","Noto Sans TC","PingFang TC",monospace;font-weight:800;cursor:pointer}
+  #admBtn{display:inline-block;margin:0 auto 12px;text-align:center}
 </style>
 <!-- icons: Lucide (ISC License) https://lucide.dev -->
 </head>
@@ -169,6 +186,7 @@
     <div class="sub">115年10月 · 2140 / 2153</div>
   </header>
   <div class="dates" id="dates"></div>
+  <div style="text-align:center;margin-bottom:12px"><button id="admBtn" onclick="openAdmin()">幹部 · 統計</button></div>
   <div class="head" id="title"></div>
   <div id="emptyArt">
     <svg viewBox="0 0 320 176" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -196,6 +214,13 @@
     <div class="grp g2"><div class="grph" style="color:var(--cB)"><span class="dot" style="background:var(--cB)"></span>二組</div><div id="c2"></div></div>
   </div>
   </div>
+  <div id="adminModal" class="modal" onclick="closeAdmin(event)"><div class="mbox" onclick="event.stopPropagation()">
+    <div id="gate"><input id="pw" type="password" inputmode="numeric" autocomplete="off"><button onclick="tryPw()">→</button></div>
+    <div id="adminBody" style="display:none">
+      <div class="statt" style="color:#ffd166">夜班幹部班表</div><div id="dutyWrap"><iframe src="https://xsos32-design.github.io/roster/"></iframe></div>
+      <div id="statBody"></div>
+      <button class="mclose" onclick="closeAdmin()">關閉</button>
+    </div></div></div>
   <textarea id="report"></textarea>
 
 <script>
@@ -247,8 +272,8 @@ const R2=[
 ["B","羅羽希","本2,病16,病17,病18,本3,病19,病20,國14,本4,病21,病22,病23,本5,病24,病25,病26,本6,病27,病28,國15,本7,病29,病30,本8,無薪,無薪,無薪,無薪,無薪,無薪,無薪"],
 ["B","李玉聖","本2,A,休,休,本3,休,休,休,本4,休,休,本5,本6,國14,國15,本7,休,休,休,休,本8,休,休,休,本1,休,本2,進階T6,休,休,休"],
 ];
-const CODES1=["B1上","B1下","B2","外B2","B3","B$","B5","B6","B7","B8","44","L1","L9","K8"];
-const CODES2=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","45上","45下","L1","L9","K8"];
+const CODES1=["B1上","B1下","B2","外B2","B3","B$","B5","B6","B7","B8","44","L1","L9"];
+const CODES2=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","45上","45下","L1","L9"];
 const TRAIN1={7:[["NIKKA","沙上智"]],10:[["威士忌·B5","湯文愷、陳泂圖"]],11:[["威士忌·B5","林洧盈、陳芷琳、陳貢鈴"]],12:[["威士忌·北區","黃安祺、吳佩珊、吳慶鴻"]],14:[["視訊會議","湯文愷"],["Glenfarclas","陳芷琳"]],15:[["Davidoff","吳信宜"]],17:[["威士忌·南大","陳怡伃、陳世傑、李承屏、李明翰"]],23:[["部門月會","陳世傑、林洧盈"]],25:[["威士忌·B5","蔡亞璇、朱韋任、游志士"]],26:[["威士忌·B5","吳信宜、陳雨彤、沙上智"]]};
 const TRAIN2={7:[["NIKKA","黃珮筑"]],10:[["威士忌·B5","李欣、孟憲鴻"]],11:[["威士忌·B5","沈嘉翎、麥嘉琪、李郁欣"]],12:[["威士忌·北區","高玉嵐、謝宛茹"]],14:[["視訊會議","高玉嵐"],["Glenfarclas","梁雅棋"]],15:[["Davidoff","陳建吉"]],17:[["威士忌·南大","何祐銓、蔡宗樺"]],23:[["部門月會","黃貽靖、羅貽辰"]],25:[["威士忌·B5","黃珮筑、賴姿伶"]],26:[["威士忌·B5","張語昕、林雅雯、羅貽辰、梁雅棋、陳建吉"]]};
 
@@ -296,6 +321,21 @@ for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
   c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${d===TODAY?`<span class=today-t>今天</span>`:""}${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
   c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
 let curD=null;
+function openAdmin(){document.getElementById("adminModal").style.display="flex";if(sessionStorage.getItem("adm")==="1")unlockAdm();else setTimeout(()=>document.getElementById("pw").focus(),50);}
+function tryPw(){if(document.getElementById("pw").value==="19891217"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
+function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("statBody").innerHTML=statsHTML();}
+function closeAdmin(e){if(e&&e.target&&e.target.id!=="adminModal")return;document.getElementById("adminModal").style.display="none";}
+function statsHTML(){function tbl(R,C,g,tag){const TR=g===1?TRAIN1:TRAIN2;
+  let rows=R.map(p=>{const days=p[2].split(",");let sta=0,rest=0,tr=0,run=0,hol=0;
+    days.forEach((raw,i)=>{raw=(raw||"").trim();const d=i+1;if(!raw||raw==="休"){rest++;return;}const pr=parse(raw,g);
+      const tmd=tmap(TR,d);const ann=(pr.mark&&pr.mark.indexOf("跑")!==0)?pr.mark:(tmd[p[1]]||"");
+      if(C.indexOf(pr.base)>=0){sta++;if(pr.mark&&pr.mark.indexOf("跑")===0)run++;if(HOLIDAYS[d])hol++;}else rest++;
+      if(ann)tr++;});
+    return {n:p[1],sta:sta,rest:rest,tr:tr,run:run,hol:hol};});
+  let x=`<div class="statt ${g===1?"c1":"c2"}">${tag}　${MONTH}月統計</div><div class=sgrid><div class="sh sn">姓名</div><div class=sh>站位</div><div class=sh>休</div><div class=sh>上課</div><div class=sh>跑班</div><div class=sh>假日</div>`;
+  rows.forEach(r=>{x+=`<div class=sn>${r.n}</div><div>${r.sta}</div><div>${r.rest}</div><div>${r.tr}</div><div>${r.run}</div><div>${r.hol}</div>`;});
+  return x+`</div>`;}
+  return tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組");}
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
   document.getElementById("emptyArt").style.display="none";document.getElementById("panel").style.display="";
   const t=document.getElementById("title");t.className="head";
