@@ -210,6 +210,10 @@
   .barrow{grid-template-columns:52px 1fr 108px!important}
   .barnum{font-size:9.5px!important}
   #monthBtn{width:100%;margin-top:8px;padding:11px;border-radius:999px;border:1px solid rgba(46,230,200,.4);background:transparent;color:#5ff6df;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;font-size:12.5px;cursor:pointer}
+  .otag{display:inline-block;font-weight:800;font-size:10.5px;color:#9fe;background:rgba(46,230,200,.12);border-radius:5px;padding:1px 6px;margin-right:6px}
+  .g2 .otag{color:#fbd;background:rgba(255,45,110,.12)}
+  .clrwrap{display:flex;gap:8px;justify-content:center}
+  .clr.allin{border-color:rgba(52,245,197,.5);color:#34f5c5}
 </style>
 <!-- icons: Lucide (ISC License) https://lucide.dev -->
 </head>
@@ -236,7 +240,7 @@
     <button class="cp" onclick="copyG(2)"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>複製二組回報</button>
   </div>
   <div class="hint">點名字＝已到，複製會一併帶入</div>
-  <div class="clrwrap"><button class="clr" onclick="clearDay()">清除本日勾選</button></div>
+  <div class="clrwrap"><button class="clr allin" onclick="markAll()">全部到齊</button><button class="clr" onclick="clearDay()">清除本日勾選</button></div>
   <div class="cols">
     <div class="grp g1"><div class="grph" style="color:var(--cT)"><span class="dot" style="background:var(--cT)"></span>一組</div><div id="c1"></div></div>
     <div class="grp g2"><div class="grph" style="color:var(--cB)"><span class="dot" style="background:var(--cB)"></span>二組</div><div id="c2"></div></div>
@@ -329,6 +333,7 @@ const CK=(function(){try{return JSON.parse(localStorage.getItem("ck"+YEAR+"_"+MO
 function ckKey(d,g,n){return d+"::"+g+"::"+n;}
 function saveCK(){try{localStorage.setItem("ck"+YEAR+"_"+MONTH,JSON.stringify(CK))}catch(e){}}
 function toggle(d,g,n){const k=ckKey(d,g,n);if(CK[k])delete CK[k];else CK[k]=1;saveCK();rerender();}
+function markAll(){if(!curD)return;[[R1,CODES1,1],[R2,CODES2,2]].forEach(function(a){var R=a[0],C=a[1],g=a[2];var gr=group(R,C,curD,tmap(g===1?TRAIN1:TRAIN2,curD),g);C.forEach(function(c){(gr.map[c]||[]).forEach(function(x){CK[ckKey(curD,g,x.name)]=1;});});});saveCK();rerender();}
 function clearDay(){if(!curD)return;Object.keys(CK).forEach(k=>{if(k.indexOf(curD+"::")===0)delete CK[k]});saveCK();rerender();}
 function rerender(){if(!curD)return;renderCol(R1,CODES1,curD,tmap(TRAIN1,curD),document.getElementById("c1"),1);renderCol(R2,CODES2,curD,tmap(TRAIN2,curD),document.getElementById("c2"),2);}
 function cls(c){if(c[0]==="外")return"cX";if(c[0]==="T")return"cT";if(c[0]==="B")return"cB";if(c[0]==="4")return"c4";if(c[0]==="L")return"cL";if(c[0]==="K")return"cX";return"";}
@@ -354,7 +359,7 @@ function renderCol(R,CODES,d,tm,el,gnum){const g=group(R,CODES,d,tm,gnum);let h=
     h+=`<div class=row><span class="code ${cls(c)}">${c}</span><span class=who>${nm}</span></div>`;});
   const CORE={1:["B1上","B1下","B2","外B2","B3","B$","44","L1"],2:["T1上","T1下","T2","外T2","T3","T$","45上","45下","L1"]};const _miss=(CORE[gnum]||[]).filter(function(c){return !(g.map[c]&&g.map[c].length);});if(_miss.length)h='<div class=warn>⚠ 缺：'+_miss.join("　")+'</div>'+h;
   const ok=Object.keys(g.other).sort();
-  if(ok.length){h+=`<div class=sub-h><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>休假・其他</div>`;ok.forEach(c=>{h+=`<div class=orow>${c}：${g.other[c].join("、")}</div>`;});}
+  if(ok.length){h+=`<div class=sub-h><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>休假・其他</div>`;const catOf=function(c){if(c[0]==="本")return"休假";if(c[0]==="國"||c.indexOf("補")>=0)return"國定/補休";if(c==="A")return"特休";if(c[0]==="病")return"病假";if(c.indexOf("無薪")>=0)return"無薪";if(c.indexOf("喪")>=0)return"喪假";if(c.indexOf("新人考")>=0)return"新人考";return"其他";};const cats={};ok.forEach(function(c){var k=catOf(c);cats[k]=(cats[k]||[]).concat(g.other[c]);});["休假","特休","國定/補休","病假","喪假","無薪","新人考","其他"].forEach(function(k){if(cats[k]&&cats[k].length)h+='<div class=orow><span class=otag>'+k+'</span>'+cats[k].join("、")+'</div>';});}
   el.innerHTML=h;}
 
 const datesEl=document.getElementById("dates");
