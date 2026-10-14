@@ -369,8 +369,8 @@ function runSwap(){var a=swGroup();var R=a[0],g=a[2];var me=document.getElementB
   var md=meRow[2].split(",");var res=[];
   for(var d=0;d<NDAYS;d++){var mine=parse((md[d]||"").trim(),g).base;if(mine!==A)continue;
     R.forEach(function(p){if(p[1]===me)return;if(WITH!=="__all__"&&p[1]!==WITH)return;var th=parse((p[2].split(",")[d]||"").trim(),g).base;
-      if(th===B)res.push('<div class=swr>'+MONTH+'/'+(d+1)+'　你 <b>'+A+'</b> ↔ '+p[1]+' <b>'+B+'</b></div>');});}
-  document.getElementById("swapRes").innerHTML=res.length?res.join(""):'<div class=swr style="color:#7a8a94">沒有可直接對換的（換個代號或對象試試）</div>';}
+      if(th===B)res.push('<div class=swr>'+'<div style="color:#ffd166;font-weight:800;margin-bottom:4px">'+MONTH+'/'+(d+1)+'（'+WD[d%7]+'） 可以換</div>'+'<div>你（'+me+'）：'+A+' → <b style="color:#5ff6df">換到 '+B+'</b></div>'+'<div>'+p[1]+'：'+B+' → <b style="color:#ff85a6">換到 '+A+'</b></div>'+'</div>');});}
+  document.getElementById("swapRes").innerHTML=res.length?('<div style="color:#7af0dd;font-weight:700;font-size:12.5px;margin-bottom:6px">✅ 找到 '+res.length+' 天可以直接換（互相對調、不相欠）</div>'+res.join("")):'<div class=swr style="color:#7a8a94">沒有可直接對換的（換個代號或對象試試）</div>';}
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 function openAdmin(){document.getElementById("adminModal").style.display="flex";if(sessionStorage.getItem("adm")==="1")unlockAdm();else setTimeout(()=>document.getElementById("pw").focus(),50);}
 function tryPw(){if(document.getElementById("pw").value==="19891217"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
