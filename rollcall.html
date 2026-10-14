@@ -190,10 +190,23 @@
   .barfill{height:100%;border-radius:7px}
   .barnum{color:#9fb4c4;font-weight:700;font-size:10px;text-align:left;white-space:nowrap}
   .barnum b{color:#ffd166} .barnum i{color:#ff85a6;font-style:normal}
+
+  #topband{height:52px;border-radius:12px;margin-bottom:10px;background:url('art.png');background-size:cover;background-position:center 38%;border:1px solid rgba(46,230,200,.3);box-shadow:0 0 18px rgba(46,230,200,.12);position:relative;overflow:hidden}
+  #topband::after{content:"營三部 · 夜班點名";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;letter-spacing:.14em;font-size:14px;color:#eafdff;text-shadow:0 0 10px rgba(0,0,0,.8);background:linear-gradient(90deg,rgba(5,8,15,.5),rgba(5,8,15,.15),rgba(5,8,15,.5))}
+  #swapBtn{background:#07100f;border:1px solid rgba(255,209,102,.4);color:#ffd166;border-radius:999px;padding:9px 14px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap}
+  .swsel{width:100%;background:#1c2430;color:#eafdff;border:1px solid rgba(46,230,200,.3);border-radius:10px;padding:9px 11px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:13px;margin-bottom:8px;outline:none}
+  .swlab{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:11px;color:#7af0dd;font-weight:700;margin:2px 0 3px}
+  #swapGo{width:100%;margin-top:4px;padding:12px;border-radius:999px;border:none;background:linear-gradient(135deg,#19c9ad,#2ee6c8);color:#00201b;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;cursor:pointer}
+  .swr{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:13px;color:#eafdff;padding:8px 10px;border:1px solid rgba(46,230,200,.2);border-radius:9px;margin-top:6px;background:#07100f}
+  .swr b{color:#ffd166}
+  #cornlogo{position:fixed;right:12px;bottom:12px;width:38px;height:38px;border-radius:50%;background:#06100e;border:1px solid rgba(46,230,200,.4);box-shadow:0 0 14px rgba(46,230,200,.25);display:none;align-items:center;justify-content:center;z-index:40;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;color:#5ff6df;font-size:18px;text-shadow:0 0 8px rgba(46,230,200,.6)}
+  .cols{gap:12px} .code{min-width:48px}
 </style>
 <!-- icons: Lucide (ISC License) https://lucide.dev -->
 </head>
 <body>
+  <div id="topband"></div>
   <div class="credit">
     <div class="cname">製作人 · 朱韋任</div>
     <div class="cwarn"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>請不要未經同意就轉用、散布</div>
@@ -203,7 +216,7 @@
     <div class="sub">115年10月 · 2140 / 2153</div>
   </header>
   <div class="dates" id="dates"></div>
-  <div style="text-align:center;margin-bottom:12px"><button id="admBtn" onclick="openAdmin()" aria-label="設定">⚙️</button></div>
+  <div style="text-align:center;margin-bottom:12px"><button id="swapBtn" onclick="openSwap()">換班配對</button><button id="admBtn" onclick="openAdmin()" aria-label="設定">⚙️</button></div>
   <div class="head" id="title"></div>
   <div id="emptyArt">
     <img src="art.png" alt="夜航主視覺" style="width:100%;max-width:342px;border-radius:16px;border:1px solid rgba(46,230,200,.3);box-shadow:0 0 26px rgba(46,230,200,.18);display:block;margin:0 auto">
@@ -228,6 +241,17 @@
       <div id="statBody"></div>
       <button class="mclose" onclick="closeAdmin()">關閉</button>
     </div></div></div>
+  <div id="cornlogo">韋</div>
+  <div id="swapModal" class="modal" onclick="if(event.target.id==='swapModal')this.style.display='none'"><div class="mbox" onclick="event.stopPropagation()">
+    <div class="statt" style="color:#ffd166">換班配對（同一天直接換）</div>
+    <div class="swlab">組別</div><select id="swGrp" class="swsel" onchange="buildSwap()"><option value="1">一組（B系/2140）</option><option value="2">二組（T系/2153）</option></select>
+    <div class="swlab">你的名字</div><select id="swName" class="swsel"></select>
+    <div class="swlab">我放（你現在的班）</div><select id="swGive" class="swsel"></select>
+    <div class="swlab">想換成</div><select id="swGet" class="swsel"></select>
+    <button id="swapGo" onclick="runSwap()">查詢可換</button>
+    <div id="swapRes" style="margin-top:10px"></div>
+    <button class="mclose" onclick="document.getElementById('swapModal').style.display='none'">關閉</button>
+  </div></div>
   <textarea id="report"></textarea>
 
 <script>
@@ -330,6 +354,22 @@ for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
   c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${d===TODAY?`<span class=today-t>今天</span>`:""}${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
   c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
 let curD=null;
+function swGroup(){return document.getElementById("swGrp").value==="1"?[R1,CODES1,1]:[R2,CODES2,2];}
+function buildSwap(){var a=swGroup();var R=a[0],C=a[1];
+  document.getElementById("swName").innerHTML=R.map(function(p){return '<option>'+p[1]+'</option>';}).join("");
+  var opts=C.filter(function(c){return c!=="K8";}).map(function(c){return '<option>'+c+'</option>';}).join("");
+  document.getElementById("swGive").innerHTML=opts;document.getElementById("swGet").innerHTML=opts;
+  document.getElementById("swapRes").innerHTML="";}
+function openSwap(){buildSwap();document.getElementById("swapModal").style.display="flex";}
+function runSwap(){var a=swGroup();var R=a[0],g=a[2];var me=document.getElementById("swName").value;
+  var A=document.getElementById("swGive").value,B=document.getElementById("swGet").value;
+  var meRow=null;R.forEach(function(p){if(p[1]===me)meRow=p;});if(!meRow)return;
+  var md=meRow[2].split(",");var res=[];
+  for(var d=0;d<NDAYS;d++){var mine=parse((md[d]||"").trim(),g).base;if(mine!==A)continue;
+    R.forEach(function(p){if(p[1]===me)return;var th=parse((p[2].split(",")[d]||"").trim(),g).base;
+      if(th===B)res.push('<div class=swr>'+MONTH+'/'+(d+1)+'　你 <b>'+A+'</b> ↔ '+p[1]+' <b>'+B+'</b></div>');});}
+  document.getElementById("swapRes").innerHTML=res.length?res.join(""):'<div class=swr style="color:#7a8a94">沒有同一天可直接對換的</div>';}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 function openAdmin(){document.getElementById("adminModal").style.display="flex";if(sessionStorage.getItem("adm")==="1")unlockAdm();else setTimeout(()=>document.getElementById("pw").focus(),50);}
 function tryPw(){if(document.getElementById("pw").value==="19891217"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
 function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("statBody").innerHTML=statsHTML();}
