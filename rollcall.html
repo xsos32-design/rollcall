@@ -246,6 +246,7 @@
     <div class="statt" style="color:#ffd166">換班配對（同一天直接換）</div>
     <div class="swlab">組別</div><select id="swGrp" class="swsel" onchange="buildSwap()"><option value="1">一組（B系/2140）</option><option value="2">二組（T系/2153）</option></select>
     <div class="swlab">你的名字</div><select id="swName" class="swsel"></select>
+    <div class="swlab">跟誰換（可不選，不選＝列出全部）</div><select id="swWith" class="swsel"></select>
     <div class="swlab">我放（你現在的班）</div><select id="swGive" class="swsel"></select>
     <div class="swlab">想換成</div><select id="swGet" class="swsel"></select>
     <button id="swapGo" onclick="runSwap()">查詢可換</button>
@@ -357,18 +358,19 @@ let curD=null;
 function swGroup(){return document.getElementById("swGrp").value==="1"?[R1,CODES1,1]:[R2,CODES2,2];}
 function buildSwap(){var a=swGroup();var R=a[0],C=a[1];
   document.getElementById("swName").innerHTML=R.map(function(p){return '<option>'+p[1]+'</option>';}).join("");
+  document.getElementById("swWith").innerHTML='<option value="__all__">不指定（列出全部）</option>'+R.map(function(p){return '<option>'+p[1]+'</option>';}).join("");
   var opts=C.filter(function(c){return c!=="K8";}).map(function(c){return '<option>'+c+'</option>';}).join("");
   document.getElementById("swGive").innerHTML=opts;document.getElementById("swGet").innerHTML=opts;
   document.getElementById("swapRes").innerHTML="";}
 function openSwap(){buildSwap();document.getElementById("swapModal").style.display="flex";}
 function runSwap(){var a=swGroup();var R=a[0],g=a[2];var me=document.getElementById("swName").value;
-  var A=document.getElementById("swGive").value,B=document.getElementById("swGet").value;
+  var A=document.getElementById("swGive").value,B=document.getElementById("swGet").value;var WITH=document.getElementById("swWith").value;
   var meRow=null;R.forEach(function(p){if(p[1]===me)meRow=p;});if(!meRow)return;
   var md=meRow[2].split(",");var res=[];
   for(var d=0;d<NDAYS;d++){var mine=parse((md[d]||"").trim(),g).base;if(mine!==A)continue;
-    R.forEach(function(p){if(p[1]===me)return;var th=parse((p[2].split(",")[d]||"").trim(),g).base;
+    R.forEach(function(p){if(p[1]===me)return;if(WITH!=="__all__"&&p[1]!==WITH)return;var th=parse((p[2].split(",")[d]||"").trim(),g).base;
       if(th===B)res.push('<div class=swr>'+MONTH+'/'+(d+1)+'　你 <b>'+A+'</b> ↔ '+p[1]+' <b>'+B+'</b></div>');});}
-  document.getElementById("swapRes").innerHTML=res.length?res.join(""):'<div class=swr style="color:#7a8a94">沒有同一天可直接對換的</div>';}
+  document.getElementById("swapRes").innerHTML=res.length?res.join(""):'<div class=swr style="color:#7a8a94">沒有可直接對換的（換個代號或對象試試）</div>';}
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 function openAdmin(){document.getElementById("adminModal").style.display="flex";if(sessionStorage.getItem("adm")==="1")unlockAdm();else setTimeout(()=>document.getElementById("pw").focus(),50);}
 function tryPw(){if(document.getElementById("pw").value==="19891217"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
