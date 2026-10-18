@@ -489,6 +489,74 @@ function copyG(g){if(!curD){return;}
  paint();
 })();
 </script>
+<style>
+/* ===== UI v8：字級、版面、美術優化 ===== */
+#topband{display:none!important}
+header{margin:2px 0 10px!important;padding-bottom:12px!important}
+header h1{font-size:21px!important;line-height:1.3}
+header h1 .ic{width:20px;height:20px;vertical-align:-3px}
+.sub{font-size:13px!important;margin-top:5px!important}
+/* 製作人：改成細長一行 */
+.credit{display:flex!important;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 12px;padding:8px 12px!important;margin:0 0 12px!important;border-radius:12px!important;box-shadow:0 0 14px rgba(46,230,200,.12)!important}
+.cname{font-size:16px!important;letter-spacing:.18em!important}
+.cwarn{font-size:11.5px!important;margin-top:0!important;opacity:.95}
+/* 我的班選單 */
+#myBar{margin:0 0 12px!important}
+#mySel{font-size:15px!important;padding:9px 34px 9px 16px!important;min-width:200px;text-align:center}
+/* 月曆 */
+.dates{gap:6px!important;margin-bottom:16px!important}
+.wk{font-size:13px!important;padding-bottom:4px!important}
+.d{min-height:62px;justify-content:center;padding:6px 1px!important;border-radius:12px!important;transition:transform .12s,box-shadow .12s,border-color .12s}
+.d:active{transform:scale(.96)}
+.d .wd{display:none!important}
+.d .num{font-size:19px!important;line-height:1.1}
+.d.sat .num{color:#9cc9ff}
+.d.sun .num{color:#ff9db4}
+.d .hol{font-size:10px!important;margin-top:3px!important}
+.d .today-t{font-size:10px!important;margin-top:3px!important}
+.d .my{font-size:12px!important;margin-top:4px!important;padding:2px 5px!important;letter-spacing:.02em}
+.d .my.rest{font-size:11.5px!important}
+.d.active{transform:translateY(-1px)}
+/* 換班／設定 */
+#swapBtn{font-size:15px!important;padding:10px 22px!important}
+/* 當日標題與按鈕 */
+.head{margin:6px 0 12px!important;scroll-margin-top:10px}
+.head .big{font-size:24px!important}
+.head .big small{font-size:14px!important}
+.btns .cp{font-size:15px!important}
+/* 兩組名單 */
+.cols{gap:10px!important}
+.grph{font-size:17px!important}
+.row{font-size:15px!important;line-height:1.45!important;padding:7px 1px!important;gap:9px!important;align-items:center!important}
+.code{font-size:13.5px!important;min-width:52px!important;padding:4px 6px!important}
+.nm{padding:1px 2px!important}
+.nm .mk{font-size:11.5px}
+.none{font-size:0!important}
+.none::after{content:"空缺";font-size:12px;font-weight:800;color:#ff7b96;border:1px dashed rgba(255,45,110,.6);border-radius:6px;padding:1px 7px;letter-spacing:.1em}
+.warn{font-size:13px!important;padding:7px 9px!important}
+.sub-h{font-size:12.5px!important;margin:12px 0 5px!important}
+.otag{font-size:11.5px!important}
+.g1 .who,.g2 .who{word-break:keep-all;overflow-wrap:anywhere}
+#emptyArt .cap{font-size:14px!important;margin-top:10px}
+@media (max-width:360px){
+ .d{min-height:56px}.d .num{font-size:17px!important}.d .my{font-size:10.5px!important;padding:1px 3px!important}
+ .row{font-size:14px!important}.code{min-width:46px!important;font-size:12.5px!important}
+}
+@media (min-width:700px){
+ .d{min-height:72px}.d .num{font-size:21px!important}.d .my{font-size:13px!important}
+}
+</style>
+<script>
+(function(){
+ /* 製作人條移到標題下方 */
+ var cr=document.querySelector('.credit'),hd=document.querySelector('header');
+ if(cr&&hd&&hd.nextSibling)hd.parentNode.insertBefore(cr,hd.nextSibling);
+ /* 點日期後自動捲到當日名單 */
+ var _sel=window.sel;
+ if(typeof _sel==='function')window.sel=function(d,c){_sel(d,c);var t=document.getElementById('title');
+  if(t){var r=t.getBoundingClientRect();if(r.top>window.innerHeight*0.55)t.scrollIntoView({behavior:'smooth',block:'start'});}};
+})();
+</script>
 <script src="https://xsos32-design.github.io/job/kv.js" defer></script>
 </body>
 </html>
