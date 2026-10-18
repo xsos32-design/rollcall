@@ -437,6 +437,58 @@ function copyG(g){if(!curD){return;}
   ta.blur();ta.style.left="-9999px";
   const b=document.querySelectorAll(".cp")[g-1];const o=b.textContent;b.textContent="已複製 ✓";setTimeout(()=>b.textContent=o,1500);}
 </script>
+<style>
+#myBar{display:flex;justify-content:center;align-items:center;gap:8px;margin:0 0 10px}
+#mySel{appearance:none;-webkit-appearance:none;background:#05070a;color:var(--ink,#eafdff);border:1.5px solid var(--t40,#2ee6c8);border-radius:999px;padding:7px 30px 7px 14px;font:800 14px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;box-shadow:0 0 12px rgba(46,230,200,.18);background-image:linear-gradient(45deg,transparent 50%,var(--t40,#2ee6c8) 50%),linear-gradient(135deg,var(--t40,#2ee6c8) 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+#mySel.m2{border-color:var(--t53,#ff2d6e);box-shadow:0 0 12px rgba(255,45,110,.2)}
+.d .my{font:800 10px/1.15 ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:3px;padding:1px 4px;border-radius:5px;white-space:nowrap;max-width:100%;overflow:hidden}
+.d .my.m1{color:var(--t40,#2ee6c8);background:rgba(46,230,200,.13)}
+.d .my.m2{color:var(--t53,#ff2d6e);background:rgba(255,45,110,.13)}
+.d .my.rest{color:#7d8a90;background:none;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif}
+.d .my .mk{color:var(--amber,#e6ab4d)}
+.d.myoff:not(.active):not(.today){opacity:.6}
+.nm.me{outline:1.5px solid currentColor;border-radius:6px;padding:0 3px;font-weight:900}
+</style>
+<script>
+/* 我的班模式：選自己名字 → 月曆每格顯示當天站位／休 */
+(function(){
+ var KEY='rc_myname';
+ var dEl=document.getElementById('dates'); if(!dEl) return;
+ var bar=document.createElement('div'); bar.id='myBar';
+ var s=document.createElement('select'); s.id='mySel'; s.setAttribute('aria-label','我的班');
+ function opts(R,g,lab){return '<optgroup label="'+lab+'">'+R.map(function(p){return '<option value="'+g+'|'+p[1]+'">'+p[1]+'</option>';}).join('')+'</optgroup>';}
+ s.innerHTML='<option value="">👤 我的班：選擇名字</option>'+opts(R1,1,'一組')+opts(R2,2,'二組');
+ bar.appendChild(s); dEl.parentNode.insertBefore(bar,dEl);
+ var me=null; try{me=localStorage.getItem(KEY)}catch(e){}
+ function rowOf(v){if(!v)return null;var g=+v.split('|')[0],n=v.slice(2);var R=g===1?R1:R2;for(var i=0;i<R.length;i++)if(R[i][1]===n)return {g:g,n:n,days:R[i][2].split(',')};return null;}
+ function label(raw,g){raw=(raw||'').trim();
+  if(!raw||raw==='休'||/^本/.test(raw)||/^國/.test(raw)||raw.indexOf('補')>=0)return {t:'休',rest:1};
+  if(raw==='A')return {t:'特休',rest:1};
+  if(/^病/.test(raw))return {t:'病假',rest:1};
+  if(raw.indexOf('無薪')>=0)return {t:'無薪',rest:1};
+  if(raw.indexOf('喪')>=0)return {t:'喪假',rest:1};
+  if(raw==='事')return {t:'事假',rest:1};
+  var p=parse(raw,g);return {t:p.base,mk:p.mark};}
+ function paint(){
+  var r=rowOf(me); var cells=dEl.querySelectorAll('.d');
+  s.value=r?me:''; s.className=r?('m'+r.g):'';
+  if(r&&s.options[s.selectedIndex])s.options[s.selectedIndex].text='👤 '+r.n+'（'+(r.g===1?'一組':'二組')+'）';
+  for(var i=0;i<cells.length;i++){var c=cells[i];var old=c.querySelector('.my');if(old)old.remove();c.classList.remove('myoff');
+   if(!r)continue; var L=label(r.days[i],r.g); var e=document.createElement('span');
+   e.className='my '+(L.rest?'rest':'m'+r.g); e.textContent=L.t;
+   if(L.mk){var m=document.createElement('span');m.className='mk';m.textContent='•';e.appendChild(m);e.title=L.mk;}
+   c.appendChild(e); if(L.rest)c.classList.add('myoff');}
+  mark();}
+ function mark(){var r=rowOf(me);['c1','c2'].forEach(function(id,ix){var col=document.getElementById(id);if(!col)return;
+  col.querySelectorAll('.nm').forEach(function(n){var nm=(n.firstChild&&n.firstChild.nodeType===3)?n.firstChild.nodeValue.trim():'';
+   n.classList.toggle('me',!!(r&&r.g===ix+1&&nm===r.n));});});}
+ s.addEventListener('change',function(){me=s.value||null;try{if(me)localStorage.setItem(KEY,me);else localStorage.removeItem(KEY)}catch(e){}
+  // 重設選項文字
+  s.innerHTML='<option value="">👤 我的班：選擇名字</option>'+opts(R1,1,'一組')+opts(R2,2,'二組');paint();});
+ ['c1','c2'].forEach(function(id){var col=document.getElementById(id);if(col)new MutationObserver(mark).observe(col,{childList:true,subtree:true});});
+ paint();
+})();
+</script>
 <script src="https://xsos32-design.github.io/job/kv.js" defer></script>
 </body>
 </html>
