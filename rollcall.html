@@ -247,7 +247,7 @@
   </div>
   </div>
   <div id="adminModal" class="modal" onclick="closeAdmin(event)"><div class="mbox" onclick="event.stopPropagation()">
-    <div id="gate"><input id="pw" type="password" inputmode="numeric" autocomplete="off"><button onclick="tryPw()">→</button></div>
+    <div id="gate"><input id="pw" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button onclick="tryPw()">→</button></div>
     <div id="adminBody" style="display:none">
       <div class="statt" style="color:#ffd166">夜班幹部班表</div><div id="dutyWrap"><iframe src="https://xsos32-design.github.io/roster/"></iframe></div>
       <div id="statBody"></div>
@@ -403,7 +403,7 @@ function copyMsg(i){var s=window._swaps[i];if(!s)return;var btn=(typeof event!==
   if(btn){var o=btn.textContent;btn.textContent='已複製 ✓';setTimeout(function(){btn.textContent=o;},1500);}}
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 function openAdmin(){document.getElementById("adminModal").style.display="flex";if(sessionStorage.getItem("adm")==="1")unlockAdm();else setTimeout(()=>document.getElementById("pw").focus(),50);}
-function tryPw(){if(document.getElementById("pw").value==="19891217"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
+function tryPw(){if(document.getElementById("pw").value.trim().toLowerCase()==="user"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
 function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("statBody").innerHTML=statsHTML();}
 function closeAdmin(e){if(e&&e.target&&e.target.id!=="adminModal")return;document.getElementById("adminModal").style.display="none";}
 function statsHTML(){function tbl(R,C,g,tag){var codes=C.filter(function(c){return c!=="K8";});
