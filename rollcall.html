@@ -235,6 +235,7 @@
     <div class="cap">點上方日期，看當天兩組站位</div>
   </div>
   <div id="panel" style="display:none">
+  <div id="stockbar" style="display:none"></div>
   <div class="btns">
     <button class="cp" onclick="copyG(1)"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>複製一組回報</button>
     <button class="cp" onclick="copyG(2)"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>複製二組回報</button>
@@ -346,6 +347,14 @@ function group(R,CODES,d,tm,gnum){const map={};CODES.forEach(c=>map[c]=[]);const
     const it={name:p[1],grp:p[0],ann};
     if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
   return {map,other};}
+/* 盤點表：外層鍵＝月份，內層鍵＝盤點日，提醒出現在前一天（兩個月一輪：10月盤、12月盤） */
+var STOCKM={10:{"2":["08 菸","Dunhill【260】、State Express 555【611】、Virginia【612】、Vogue【613】、LUCKY STRIKE【676】、捲菸【811】"],"3":["09 酒","威士忌【822】"],"4":["09 酒","金車【525】、Glenrothes【536】、MACALLAN【568】、Highland Park【584】、純麥威士忌【831】"],"6":["08 菸","Mevius【607】、MI-NE峰【659】、Caster【672】、Cigaronne【6102】、捲菸【811】"],"7":["09 酒","酒類無折扣／無抽傭【838】、特蘇無折扣酒類【840】"],"8":["08 菸","Davidoff【603】、Parliament【609】、Winston【6261】、P&S【6554】、捲菸【811】"],"9":["07 巧","Modernline【732】、DAIKO【704】、Kobe Fugetsudo【7097】、Lotte【7089】、UHA【7102】、有樂【7106】"],"13":["08 菸","雪茄【812】、菸絲【813】、菸斗配件【970】、雪茄盒【979】、雪茄菸灰缸【978】"],"14":["07 巧","寶艦【953】、LINDT【713】、Storck【7092】、Haribo【7082】"],"15":["08 菸 ＋ 00","Kent【604】、Seven Stars【6042】、Marlboro【606】、Mevius【607】、L&M【671】、ESSE【683】、捲菸【811】／543 零星品牌、992 其它類贈品"],"16":["09 酒","Tamdhu【5521】、GLENFIDDICH【565】、BALVENIE【597】、GlenDronach【5991】、Glen Grant【5992】、純麥威士忌【831】"],"17":["00 贈品","菸酒類贈品【892】、小酒贈品【895】"],"18":["09 酒","白蘭地【821】、白酒【826】"],"20":["08 菸","Ploom X【6191】、Mevius【607】、MI-NE峰【659】、Caster【672】、加熱菸【815】、加熱元件【816】、捲菸【811】"],"21":["07 巧","F.N.A【702】、Zaini【7079】、Shi Le Po【7078】、Hershey【7076】、Chupa Chups【7081】、Belgian【7083】、M&M'S【753】、Hawaiian Host【767】"],"24":["09 酒","Hunter Laing【290】、Bruichladdich【511】、Tomatin【5121】、Glenfarclas【557】、Deanston【5312】、Douglas【550】、Hinotori【5512】、Chieftain's【552】、台灣菸酒公司【593】、東方者【6918】、Gordon & Macphail【6947】、Rosebank【6949】、Macleod【6933】、純麥威士忌【831】"],"28":["09 酒","伏特加酒【820】、利口酒【823】、蒸餾酒【828】、琴酒【829】、黃酒【832】、龍舌蘭酒【833】、穀物威士忌【836】"]}};
+/* 沒有這個月的盤點表就整塊自動隱藏（例：11 月不盤） */
+function stockOf(d){var M=STOCKM[MONTH];if(!M)return null;var k=M[d+1];return k?{d:d+1,c:k[0],t:k[1]}:null;}
+function stockBar(d){var e=document.getElementById("stockbar");if(!e)return;var s=stockOf(d);
+ if(!s){e.style.display="none";e.innerHTML="";return}
+ e.style.display="";
+ e.innerHTML='<div class="sbl">本日盤點</div><div class="sbh"><span class="sbi">📦</span>明天 '+MONTH+'/'+s.d+'（週'+wd(s.d)+'）要盤<span class="sbc">'+s.c+'</span></div><div class="sbt">'+s.t+'</div>';}
 function reportText(R,CODES,d,tm,gnum){const g=group(R,CODES,d,tm,gnum);const lines=[`${MONTH}/${d}${R===R1?"一組":"二組"}點名`,""];
   CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return;
     const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")+(CK[ckKey(d,gnum,x.name)]?"✅":"")).join("、");lines.push(`${c}：${nm||"🈚️"}`);});
@@ -428,6 +437,7 @@ function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.
   document.getElementById("emptyArt").style.display="none";document.getElementById("panel").style.display="";
   const t=document.getElementById("title");t.className="head";
   t.innerHTML=`<span class=big>${MONTH}月${d}日<small>週${wd(d)}</small></span>${HOLIDAYS[d]?`<span class=chip>${HOLIDAYS[d]}</span>`:""}`;
+  stockBar(d);
   renderCol(R1,CODES1,d,tmap(TRAIN1,d),document.getElementById("c1"),1);
   renderCol(R2,CODES2,d,tmap(TRAIN2,d),document.getElementById("c2"),2);}
 function copyG(g){if(!curD){return;}
@@ -438,6 +448,12 @@ function copyG(g){if(!curD){return;}
   const b=document.querySelectorAll(".cp")[g-1];const o=b.textContent;b.textContent="已複製 ✓";setTimeout(()=>b.textContent=o,1500);}
 </script>
 <style>
+#stockbar{border:1.5px solid #e6ab4d;border-left:6px solid #e6ab4d;background:rgba(230,171,77,.09);border-radius:10px;padding:9px 12px;margin:0 0 12px;text-align:left}
+#stockbar .sbl{font:900 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;color:#05070a;background:#e6ab4d;border-radius:5px;padding:3px 8px;display:inline-block;margin-bottom:7px}
+#stockbar .sbh{font:800 14px/1.4 "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#e6ab4d;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#stockbar .sbi{font-size:15px}
+#stockbar .sbc{background:#e6ab4d;color:#05070a;border-radius:6px;padding:1px 8px;font-size:12.5px;font-weight:900}
+#stockbar .sbt{font-size:13px;line-height:1.75;color:#eafdff;margin-top:5px;word-break:break-word}
 #myBar{display:flex;justify-content:center;align-items:center;gap:8px;margin:0 0 10px}
 #mySel{appearance:none;-webkit-appearance:none;background:#05070a;color:var(--ink,#eafdff);border:1.5px solid var(--t40,#2ee6c8);border-radius:999px;padding:7px 30px 7px 14px;font:800 14px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;box-shadow:0 0 12px rgba(46,230,200,.18);background-image:linear-gradient(45deg,transparent 50%,var(--t40,#2ee6c8) 50%),linear-gradient(135deg,var(--t40,#2ee6c8) 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
 #mySel.m2{border-color:var(--t53,#ff2d6e);box-shadow:0 0 12px rgba(255,45,110,.2)}
