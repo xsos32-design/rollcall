@@ -219,6 +219,14 @@
   .clsp{display:inline-block;font-size:11.5px;font-weight:800;padding:0 6px;border-radius:5px;margin-right:6px;color:#ffd166;border:1px solid rgba(255,209,102,.5)}
   .clsn{color:#b9cfd3;font-weight:700}
   .sub-h .ic{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+  .cgrid .up{background:rgba(255,93,122,.2)!important;color:#ff9fb2!important;font-weight:900}
+  .cgrid .dn{background:rgba(46,230,200,.16)!important;color:#7af7e4!important;font-weight:900}
+  .cgrid .avg{background:#13221f!important;color:#ffd166!important;font-weight:900}
+  .cgrid .off{color:#5b706c!important}
+  .cgrid.cgrid>div{font-size:13px}
+  .fairlg{display:flex;flex-wrap:wrap;gap:6px 10px;margin:2px 0 8px;font:700 11.5px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#9fb8b3}
+  .fairlg .up{color:#ff9fb2}.fairlg .dn{color:#7af7e4}
+  .fairlg .up::before,.fairlg .dn::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;background:currentColor;opacity:.5}
 </style>
 <!-- icons: Lucide (ISC License) https://lucide.dev -->
 </head>
@@ -426,12 +434,17 @@ function openAdmin(){document.getElementById("adminModal").style.display="flex";
 function tryPw(){if(document.getElementById("pw").value.trim().toLowerCase()==="user"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
 function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("statBody").innerHTML=statsHTML();}
 function closeAdmin(e){if(e&&e.target&&e.target.id!=="adminModal")return;document.getElementById("adminModal").style.display="none";}
-function statsHTML(){function tbl(R,C,g,tag){var codes=C.filter(function(c){return c!=="K8";});
-  var data=R.map(function(p){var days=p[2].split(",");var cc={},tot=0;days.forEach(function(raw){raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(codes.indexOf(pr.base)>=0){cc[pr.base]=(cc[pr.base]||0)+1;tot++;}});return {n:p[1],cc:cc,tot:tot};});
-  var colMax={};codes.forEach(function(c){var m=0;data.forEach(function(r){if((r.cc[c]||0)>m)m=r.cc[c]||0;});colMax[c]=m;});
-  var head='<div class="sh2 sn2">姓名</div>'+codes.map(function(c){return '<div class=sh2>'+c+'</div>';}).join("")+'<div class="sh2 tot">合計</div>';
-  var body=data.map(function(r){return '<div class=sn2>'+r.n+'</div>'+codes.map(function(c){var v=r.cc[c]||0;var hi=(v>0&&v===colMax[c]&&colMax[c]>=2)?" hi":"";return '<div class="'+(v?"":"z")+hi+'">'+(v||"·")+'</div>';}).join("")+'<div class=tot>'+r.tot+'</div>';}).join("");
-  return '<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　'+MONTH+'月 · 各符號次數（亮色＝該站最多）</div><div class=scroll><div class=cgrid style="grid-template-columns:62px repeat('+(codes.length+1)+',31px)">'+head+body+'</div></div>';}
+function statsHTML(){function tbl(R,C,g,tag){var P=g===1?"B":"T";var codes=[P+"1上",P+"1下",P+"2","外"+P+"2"];var lab=["1上","1下","2","外2"];
+  var data=R.map(function(p){var days=p[2].split(",");var cc={},tot=0,any=0;days.forEach(function(raw){raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(C.indexOf(pr.base)>=0)any++;if(codes.indexOf(pr.base)>=0){cc[pr.base]=(cc[pr.base]||0)+1;tot++;}});return {n:p[1],cc:cc,tot:tot,any:any};});
+  var act=data.filter(function(r){return r.any>0;});var N=act.length||1;
+  var avg={};codes.forEach(function(c){avg[c]=act.reduce(function(a,r){return a+(r.cc[c]||0);},0)/N;});var avgT=act.reduce(function(a,r){return a+r.tot;},0)/N;
+  function f1(x){return (Math.round(x*10)/10).toFixed(1);}
+  function tone(v,a){return v-a>=1?" up":(a-v>=1?" dn":"");}
+  var head='<div class="sh2 sn2">姓名</div>'+lab.map(function(c){return '<div class=sh2>'+c+'</div>';}).join("")+'<div class="sh2 tot">合計</div>';
+  var body=data.map(function(r){if(!r.any)return '<div class="sn2 off">'+r.n+'</div>'+codes.map(function(){return '<div class=z>·</div>';}).join("")+'<div class="tot z">—</div>';
+    return '<div class=sn2>'+r.n+'</div>'+codes.map(function(c){var v=r.cc[c]||0;return '<div class="'+(v?"":"z")+tone(v,avg[c])+'">'+v+'</div>';}).join("")+'<div class="tot'+tone(r.tot,avgT)+'">'+r.tot+'</div>';}).join("");
+  var foot='<div class="sn2 avg">平均</div>'+codes.map(function(c){return '<div class=avg>'+f1(avg[c])+'</div>';}).join("")+'<div class="tot avg">'+f1(avgT)+'</div>';
+  return '<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　'+MONTH+'月 · 公平性（1上／1下／2／外2）</div><div class=fairlg><span class=up>高於平均 1 次以上</span><span class=dn>低於平均 1 次以上</span><span>平均只算本月有站位的 '+act.length+' 人</span></div><div class=cgrid style="grid-template-columns:minmax(64px,1.3fr) repeat(5,1fr);min-width:0">'+head+foot+body+foot+'</div>';}
   function bars(R,C,g,tag){var rows=R.map(function(p){var days=p[2].split(",");var sta=0,run=0,hol=0;
     days.forEach(function(raw,i){raw=(raw||"").trim();var d=i+1;if(!raw||raw==="休")return;var pr=parse(raw,g);
       if(C.indexOf(pr.base)>=0){sta++;if(pr.base[0]==="跑")run++;if(HOLIDAYS[d])hol++;}});
