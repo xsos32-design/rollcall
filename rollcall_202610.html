@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>營三部二期入境 · 點名</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="點名">
+<meta name="theme-color" content="#0f131a">
+<style>
+  :root{
+    --bg:#0f131a;--surf:#161c26;--line:#28313e;--faint:#1f2732;
+    --tx:#e8edf3;--mut:#8b95a4;--dim:#5a6577;
+    --amber:#e6ab4d;--sat:#68a6ff;--sun:#ff8080;--sel:#2d6cf0;--ok:#2f9e5e;
+    --cT:#63c1e6;--cB:#74d3a0;--c4:#b69be8;--cL:#e3aa63;--cX:#ec8b7e;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;
+    font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;padding:14px 10px 48px}
+  header{text-align:center;margin-bottom:12px}
+  .credit{text-align:center;padding:12px 10px;margin-bottom:12px;border:1.5px solid var(--cX);box-shadow:0 0 26px rgba(236,139,126,.14);
+    border-radius:12px;background:linear-gradient(180deg,#20272f,#171d26)}
+  .cname{font-size:25px;font-weight:800;letter-spacing:2px;background:linear-gradient(95deg,#8fd4ef,#8ee6ad 55%,#f0c07a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .cwarn{font-size:13px;font-weight:700;color:var(--cX);margin-top:5px;letter-spacing:.3px}
+  h1{font-size:17px;font-weight:700;letter-spacing:.5px;margin:0}
+  .sub{color:var(--mut);font-size:12px;margin-top:3px}
+  .dates{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:14px}
+  .wk{text-align:center;font-size:11px;color:var(--dim);padding-bottom:2px}
+  .wk.sat{color:var(--sat)}.wk.sun{color:var(--sun)}
+  .d{background:var(--surf);border:1px solid var(--line);border-radius:9px;padding:6px 0 5px;
+    cursor:pointer;display:flex;flex-direction:column;align-items:center;transition:background .12s,border-color .12s}
+  .d .num{font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .d .wd{font-size:9px;color:var(--dim);margin-top:1px}
+  .d .hol{font-size:8.5px;color:var(--amber);font-weight:700;margin-top:2px;line-height:1}
+  .d.sat .wd{color:var(--sat)}.d.sun .wd{color:var(--sun)}
+  .d.hd{border-color:rgba(255,107,107,.45);background:linear-gradient(180deg,rgba(255,107,107,.10),rgba(255,107,107,0) 62%)}
+  .d.hd .num,.d.hd .wd,.d.hd .hol{color:#ff6b6b}
+  .d.active{background:linear-gradient(160deg,#3b7bf6,#2158d8);border-color:#4f86f0;box-shadow:0 6px 18px rgba(45,108,240,.42)}
+  .d.active .num,.d.active .wd{color:#fff}.d.active .hol{color:#ffe0a3}
+  .d.today:not(.active){box-shadow:inset 0 0 0 2px var(--sel)}
+  .d .today-t{font-size:8.5px;color:#7fb0ff;font-weight:700;line-height:1;margin-top:2px}
+  .d.active .today-t{color:#fff}
+  .head{text-align:center;margin:2px 0 12px}
+  .head .big{font-size:21px;font-weight:800;background:linear-gradient(90deg,#eaf1f8,#bcd6ea);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .head .big small{font-size:13px;font-weight:500;color:var(--mut);margin-left:6px}
+  .head .chip{display:inline-block;margin-left:8px;font-size:11px;font-weight:800;color:#fff;box-shadow:0 3px 10px rgba(224,82,82,.35);
+    background:linear-gradient(135deg,#ef5f5f,#d23c3c);border-radius:6px;padding:2px 8px;vertical-align:middle}
+  .head.empty{color:var(--mut);font-size:14px;font-weight:400}
+  .btns{display:flex;gap:8px;margin-bottom:14px}
+  .cp{flex:1;padding:12px 8px;font-size:14px;font-weight:700;color:#fff;border:none;border-radius:12px;cursor:pointer;letter-spacing:.4px;
+    background:linear-gradient(135deg,#2fae66,#22a596);box-shadow:0 6px 16px rgba(38,160,120,.30)}
+  .cp:active{filter:brightness(1.1);transform:translateY(1px)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grp{border:1px solid var(--line);border-radius:14px;padding:10px 10px 6px;box-shadow:0 3px 16px rgba(0,0,0,.28)}
+  .g1{background:linear-gradient(180deg,rgba(99,193,230,.07),rgba(99,193,230,0) 55%)}
+  .g2{background:linear-gradient(180deg,rgba(116,211,160,.07),rgba(116,211,160,0) 55%)}
+  .grph{font-size:14px;font-weight:800;padding-bottom:6px;margin-bottom:5px;border-bottom:2px solid var(--line);letter-spacing:.5px}
+  .g1 .grph{border-color:var(--cT)}.g2 .grph{border-color:var(--cB)}
+  .row{display:flex;align-items:flex-start;gap:8px;padding:5px 1px;font-size:12.5px;line-height:1.5;border-bottom:1px solid var(--faint)}
+  .code{flex:0 0 auto;min-width:42px;text-align:center;font-weight:800;font-size:11.5px;padding:2px 6px;border-radius:7px;font-variant-numeric:tabular-nums;letter-spacing:.3px}
+  .who{flex:1;min-width:0}
+  .nm{cursor:pointer;border-radius:4px;padding:0 1px}
+  .nm.on{color:#a6ecc2;font-weight:700;background:rgba(79,208,138,.13);border-radius:6px;padding:1px 5px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
+  .chk{color:#4fd08a}
+  .ic{width:15px;height:15px;vertical-align:-3px;flex:none;display:inline-block}
+  h1 .ic{width:17px;height:17px;vertical-align:-3px;margin-right:6px;color:var(--mut)}
+  .cp .ic{width:16px;height:16px;margin-right:6px}
+  .cwarn .ic{width:13px;height:13px;vertical-align:-2px;margin-right:5px}
+  svg.chk{width:14px;height:14px;vertical-align:-2px;color:#4fd08a}
+  .mk .ic{width:11px;height:11px;vertical-align:-1px;margin-right:2px}
+  .sub-h .ic{width:12px;height:12px;vertical-align:-2px;margin-right:4px}
+  body::after{content:"";position:fixed;bottom:-120px;left:50%;transform:translateX(-50%);
+    width:520px;height:320px;pointer-events:none;z-index:0;
+    background:radial-gradient(60% 60% at 50% 100%,rgba(116,211,160,.07),transparent 70%)}
+  body::before{content:"";position:fixed;top:-90px;left:50%;transform:translateX(-50%);
+    width:460px;height:300px;pointer-events:none;z-index:0;
+    background:radial-gradient(60% 60% at 50% 0,rgba(99,193,230,.12),rgba(116,211,160,.05) 45%,transparent 72%)}
+  .credit,header,.dates,.head,#emptyArt,#panel{position:relative;z-index:1}
+  header{padding-bottom:10px}
+  header::after{content:"";display:block;height:1px;margin:11px auto 0;width:66%;
+    background:linear-gradient(90deg,transparent,rgba(99,193,230,.55),rgba(116,211,160,.55),transparent)}
+  #emptyArt{text-align:center;padding:16px 10px 10px;animation:fade .5s ease}
+  #emptyArt svg{width:220px;height:auto;max-width:82%}
+  #emptyArt .cap{margin-top:14px;font-size:13.5px;color:var(--mut);letter-spacing:.5px}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+  #emptyArt circle{animation:tw 3.2s ease-in-out infinite}
+  #emptyArt circle:nth-of-type(2){animation-delay:.7s}#emptyArt circle:nth-of-type(3){animation-delay:1.3s}#emptyArt circle:nth-of-type(4){animation-delay:.4s}#emptyArt circle:nth-of-type(5){animation-delay:1.9s}
+  .hint{text-align:center;color:var(--dim);font-size:11px;margin:-6px 0 8px}
+  .clrwrap{text-align:center;margin-bottom:13px}
+  .clr{background:none;border:1px solid var(--line);color:var(--mut);font-size:12px;padding:6px 16px;border-radius:8px;cursor:pointer}
+  .clr:active{background:var(--surf)}
+  .none{color:var(--dim)}
+  .mk{color:var(--amber);font-size:11px}
+  .sub-h{font-size:11px;color:var(--dim);margin:8px 0 3px;font-weight:600}
+  .orow{font-size:12px;color:var(--mut);line-height:1.5;padding:1px 0}
+  .cT{color:#93d6f0;background:rgba(99,193,230,.13)}.cB{color:#93e4b6;background:rgba(116,211,160,.13)}.c4{color:#c9b4f0;background:rgba(182,155,232,.14)}.cL{color:#ecc082;background:rgba(227,170,99,.14)}.cX{color:#f2a99e;background:rgba(236,139,126,.14)}
+  #report{position:absolute;left:-9999px}
+
+  /* ===== 航班板同款 (2140青綠 / 2153洋紅) ===== */
+  :root{--t40:#2ee6c8;--t53:#ff2d6e;--ink:#eafdff}
+  body{background:
+    radial-gradient(60% 40% at 18% -2%,rgba(46,230,200,.16),transparent 60%),
+    radial-gradient(60% 40% at 85% -2%,rgba(255,45,110,.14),transparent 60%),
+    #000;font-weight:600}
+  body::before{display:none}
+  .credit{border:1px solid rgba(46,230,200,.45);background:#06100e;border-radius:16px;
+    box-shadow:0 0 26px rgba(46,230,200,.18)}
+  .cname{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;letter-spacing:.14em;color:#eafdff;text-shadow:0 0 14px rgba(46,230,200,.55),0 0 4px rgba(255,255,255,.4)}
+  .cwarn{color:var(--t53)!important;font-weight:800}
+  h1{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;letter-spacing:.05em;color:var(--ink);text-shadow:0 0 12px rgba(46,230,200,.3)}
+  h1 .ic{color:var(--t40)}
+  .sub{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;letter-spacing:.2em;color:#7af0dd}
+  header::after{background:linear-gradient(90deg,transparent,var(--t40),var(--t53),transparent);box-shadow:0 0 10px var(--t40)}
+  .wk{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700}
+  .d{background:#07100f;border:1px solid rgba(46,230,200,.22);border-radius:12px}
+  .d .num{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;font-size:17px;color:#dffbff}
+  .d .wd{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif}
+  .d.active{background:linear-gradient(160deg,rgba(46,230,200,.4),rgba(46,230,200,.12))!important;border-color:var(--t40)!important;
+    box-shadow:0 0 18px rgba(46,230,200,.6),inset 0 0 12px rgba(46,230,200,.25)!important}
+  .d.active .num{color:#001a16;text-shadow:none}
+  .d.today:not(.active){box-shadow:inset 0 0 0 1px var(--t40),0 0 12px rgba(46,230,200,.4)!important;border-color:var(--t40)}
+  .d .today-t{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:var(--t40)}
+  .d.hd{border-color:rgba(255,45,110,.6)!important;box-shadow:0 0 10px rgba(255,45,110,.35)}
+  .d.hd .num,.d.hd .wd,.d.hd .hol{color:var(--t53)!important;text-shadow:0 0 6px rgba(255,45,110,.4)}
+  .d .hol{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800}
+  .head .big{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;letter-spacing:.04em;color:var(--ink)!important;background:none!important;text-shadow:0 0 16px rgba(46,230,200,.35)}
+  .head .chip{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;background:linear-gradient(135deg,#ff3d74,#d61e55)!important}
+  .btns{gap:10px}
+  .cp{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;letter-spacing:.14em;border-radius:999px!important;border:1px solid rgba(255,255,255,.18)!important}
+  .cp:nth-child(1){background:linear-gradient(135deg,#19c9ad,#2ee6c8)!important;color:#00201b!important;box-shadow:0 0 20px rgba(46,230,200,.4)!important}
+  .cp:nth-child(2){background:linear-gradient(135deg,#ff3d74,#d61e55)!important;color:#fff!important;box-shadow:0 0 20px rgba(255,45,110,.4)!important}
+  .clr{border-radius:999px;border-color:rgba(46,230,200,.4);color:#7af0dd;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700}
+  .cols{gap:12px}
+  .grp{border-radius:18px;background:#05100e!important}
+  .g1{border:1.5px solid var(--t40)!important;box-shadow:0 0 22px rgba(46,230,200,.18),inset 0 0 22px rgba(46,230,200,.05)!important}
+  .g2{border:1.5px solid var(--t53)!important;box-shadow:0 0 22px rgba(255,45,110,.18),inset 0 0 22px rgba(255,45,110,.05)!important}
+  .grph{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;letter-spacing:.14em;font-size:16px}
+  .g1 .grph{color:var(--t40)!important;border-color:var(--t40)!important;text-shadow:0 0 10px rgba(46,230,200,.5)}
+  .g2 .grph{color:var(--t53)!important;border-color:var(--t53)!important;text-shadow:0 0 10px rgba(255,45,110,.5)}
+  .code{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;font-size:13px;letter-spacing:.06em;border:1.5px solid currentColor;border-radius:8px;min-width:46px;padding:3px 7px;text-shadow:0 0 6px currentColor}
+  .g1 .code{color:#5ff6df!important;background:rgba(46,230,200,.08)!important}
+  .g2 .code{color:#ff85a6!important;background:rgba(255,45,110,.08)!important}
+  .who{font-weight:800;color:#eafdff}
+  .nm{font-weight:800}
+  .g1 .nm.on{background:rgba(46,230,200,.18)!important;color:#7dffe6!important;box-shadow:0 0 8px rgba(46,230,200,.35)}
+  .g2 .nm.on{background:rgba(255,45,110,.18)!important;color:#ffb3c8!important;box-shadow:0 0 8px rgba(255,45,110,.35)}
+  .mk{color:#ffd166!important;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif}
+  .sub-h{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;letter-spacing:.1em}
+  .g1 .sub-h{color:#5ff6df}.g2 .sub-h{color:#ff85a6}
+  .orow{color:#9fb4c4}
+  #emptyArt .cap{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;letter-spacing:.1em;color:#7af0dd}
+  .cname{color:#eafdff!important;-webkit-text-fill-color:#eafdff!important;background:none!important;text-shadow:0 0 14px rgba(46,230,200,.6),0 0 4px rgba(255,255,255,.5)!important}
+
+  #admBtn{background:#07100f;border:1px solid rgba(255,45,110,.4);color:#ff85a6;border-radius:999px;padding:9px 14px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap}
+  #gate{display:flex;gap:8px}
+  #pw{flex:1;background:#07100f;border:1px solid rgba(46,230,200,.4);border-radius:999px;color:#eafdff;padding:12px 16px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:18px;letter-spacing:4px;text-align:center;outline:none}
+  #gate button{background:linear-gradient(135deg,#19c9ad,#2ee6c8);color:#00201b;border:none;border-radius:999px;padding:0 20px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;cursor:pointer}
+  .statt{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;font-size:15px;letter-spacing:.08em;margin:14px 0 8px;text-align:center}
+  .statt.c1{color:#2ee6c8} .statt.c2{color:#ff5d7a}
+  .sgrid{display:grid;grid-template-columns:1.6fr .8fr .6fr .8fr .8fr .8fr;gap:1px;background:#1c2a28;border:1px solid #1c2a28;border-radius:10px;overflow:hidden;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:12px}
+  .sgrid>div{background:#081110;padding:6px 4px;text-align:center;color:#cfe}
+  .sgrid .sh{background:#0e1a18;color:#7af0dd;font-weight:800}
+  .sgrid .sn{text-align:left;padding-left:8px;color:#eafdff;font-weight:700}
+  #dutyWrap iframe{width:100%;height:420px;border:1px solid rgba(46,230,200,.3);border-radius:12px;background:#000}
+
+  .modal{display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.85);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:14px}
+  .mbox{width:100%;max-width:460px;max-height:88vh;overflow:auto;background:#060f0e;border:1.5px solid rgba(46,230,200,.5);border-radius:18px;padding:16px;box-shadow:0 0 36px rgba(46,230,200,.25)}
+  .mclose{width:100%;margin-top:14px;padding:12px;border-radius:999px;border:1px solid rgba(46,230,200,.45);background:transparent;color:#5ff6df;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;cursor:pointer}
+  #admBtn{display:inline-block;margin:0 auto 12px;width:40px;height:40px;border-radius:999px;border:1px solid rgba(46,230,200,.35);background:#07100f;font-size:18px;line-height:1;cursor:pointer;padding:0}
+
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px}
+  .cgrid{display:grid;gap:1px;background:#1c2a28;border:1px solid #1c2a28;border-radius:10px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:11px;min-width:max-content}
+  .cgrid>div{background:#081110;padding:5px 3px;text-align:center;color:#d7f3ee;min-width:30px}
+  .cgrid .sh2{background:#0e1a18;color:#7af0dd;font-weight:800;position:sticky;top:0;z-index:2}
+  .cgrid .sn2{background:#0b1513;color:#eafdff;font-weight:700;text-align:left;padding-left:7px;position:sticky;left:0;z-index:1}
+  .cgrid .sh2.sn2{z-index:3}
+  .cgrid .z{color:#36504c}
+  .cgrid .tot{background:#0e1a18;color:#ffd166;font-weight:800}
+
+  .barwrap{margin-top:6px}
+  .barrow{display:grid;grid-template-columns:58px 1fr 76px;gap:7px;align-items:center;margin:4px 0;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:11px}
+  .barrow .bn{color:#eafdff;font-weight:700;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bartrk{height:14px;background:#0b1513;border:1px solid #1c2a28;border-radius:7px;overflow:hidden;position:relative}
+  .barfill{height:100%;border-radius:7px}
+  .barnum{color:#9fb4c4;font-weight:700;font-size:10px;text-align:left;white-space:nowrap}
+  .barnum b{color:#ffd166} .barnum i{color:#ff85a6;font-style:normal}
+
+  #topband{height:52px;border-radius:12px;margin-bottom:10px;background:url('art.png');background-size:cover;background-position:center 38%;border:1px solid rgba(46,230,200,.3);box-shadow:0 0 18px rgba(46,230,200,.12);position:relative;overflow:hidden}
+  #topband::after{content:"營三部 · 夜班點名";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;letter-spacing:.14em;font-size:14px;color:#eafdff;text-shadow:0 0 10px rgba(0,0,0,.8);background:linear-gradient(90deg,rgba(5,8,15,.5),rgba(5,8,15,.15),rgba(5,8,15,.5))}
+  #swapBtn{background:#07100f;border:1px solid rgba(255,209,102,.4);color:#ffd166;border-radius:999px;padding:9px 14px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap}
+  .swsel{width:100%;background:#1c2430;color:#eafdff;border:1px solid rgba(46,230,200,.3);border-radius:10px;padding:9px 11px;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:13px;margin-bottom:8px;outline:none}
+  .swlab{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:11px;color:#7af0dd;font-weight:700;margin:2px 0 3px}
+  #swapGo{width:100%;margin-top:4px;padding:12px;border-radius:999px;border:none;background:linear-gradient(135deg,#19c9ad,#2ee6c8);color:#00201b;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:800;cursor:pointer}
+  .swr{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:13px;color:#eafdff;padding:8px 10px;border:1px solid rgba(46,230,200,.2);border-radius:9px;margin-top:6px;background:#07100f}
+  .swr b{color:#ffd166}
+  #cornlogo{position:fixed;right:12px;bottom:12px;width:38px;height:38px;border-radius:50%;background:#06100e;border:1px solid rgba(46,230,200,.4);box-shadow:0 0 14px rgba(46,230,200,.25);display:none;align-items:center;justify-content:center;z-index:40;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:900;color:#5ff6df;font-size:18px;text-shadow:0 0 8px rgba(46,230,200,.6)}
+  .cols{gap:12px} .code{min-width:48px}
+
+  .swmsg{margin-top:7px;width:100%;padding:8px;border-radius:999px;border:1px solid rgba(255,209,102,.5);background:rgba(255,209,102,.1);color:#ffd166;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;font-size:12px;cursor:pointer}
+
+  .warn{background:rgba(255,45,110,.12);border:1px solid rgba(255,45,110,.5);color:#ff7b96;font-weight:800;font-size:12px;border-radius:9px;padding:6px 9px;margin-bottom:8px;text-align:center;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif}
+  .cgrid .hi{background:rgba(255,209,102,.18)!important;color:#ffd166!important;font-weight:800}
+  .barrow{grid-template-columns:52px 1fr 108px!important}
+  .barnum{font-size:9.5px!important}
+  #monthBtn{width:100%;margin-top:8px;padding:11px;border-radius:999px;border:1px solid rgba(46,230,200,.4);background:transparent;color:#5ff6df;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-weight:700;font-size:12.5px;cursor:pointer}
+  .otag{display:inline-block;font-weight:800;font-size:10.5px;color:#9fe;background:rgba(46,230,200,.12);border-radius:5px;padding:1px 6px;margin-right:6px}
+  .g2 .otag{color:#fbd;background:rgba(255,45,110,.12)}
+  .clrwrap{display:flex;gap:8px;justify-content:center}
+  .clr.allin{border-color:rgba(52,245,197,.5);color:#34f5c5}
+  .clsl{font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;font-size:13.5px;line-height:1.5;padding:5px 2px;border-bottom:1px solid rgba(255,255,255,.06);color:#eafdff}
+  .clsl b{font-weight:900;margin-right:6px}
+  .clsp{display:inline-block;font-size:11.5px;font-weight:800;padding:0 6px;border-radius:5px;margin-right:6px;color:#ffd166;border:1px solid rgba(255,209,102,.5)}
+  .clsn{color:#b9cfd3;font-weight:700}
+  .sub-h .ic{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+  .cgrid .up{background:rgba(255,93,122,.2)!important;color:#ff9fb2!important;font-weight:900}
+  .cgrid .dn{background:rgba(46,230,200,.16)!important;color:#7af7e4!important;font-weight:900}
+  .cgrid .avg{background:#13221f!important;color:#ffd166!important;font-weight:900}
+  .cgrid .off{color:#5b706c!important}
+  .cgrid.cgrid>div{font-size:13px}
+  .fairlg{display:flex;flex-wrap:wrap;gap:6px 10px;margin:2px 0 8px;font:700 11.5px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#9fb8b3}
+  .fairlg .up{color:#ff9fb2}.fairlg .dn{color:#7af7e4}
+  .fairlg .up::before,.fairlg .dn::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px;background:currentColor;opacity:.5}
+</style>
+<!-- icons: Lucide (ISC License) https://lucide.dev -->
+</head>
+<body>
+  <div id="topband"></div>
+  <div class="credit">
+    <div class="cname">製作人 · 朱韋任</div>
+    <div class="cwarn"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>請不要未經同意就轉用、散布</div>
+  </div>
+  <header>
+    <h1><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>營三部二期入境 · 夜班點名</h1>
+    <div class="sub">115年10月 · 2140 / 2153</div>
+  </header>
+  <style>#mnav{display:flex;justify-content:center;margin:0 0 10px}#mnav a{font:800 13.5px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#ffd166;border:1px solid rgba(255,209,102,.5);border-radius:999px;padding:6px 14px;text-decoration:none;background:rgba(255,209,102,.08)}</style><div id="mnav"><a href="rollcall.html?m=11">看 11 月班表 →</a></div><div class="dates" id="dates"></div>
+  <div style="text-align:center;margin-bottom:12px"><button id="swapBtn" onclick="openSwap()">換班配對</button><button id="admBtn" onclick="openAdmin()" aria-label="設定">⚙️</button></div>
+  <div class="head" id="title"></div>
+  <div id="emptyArt">
+    <img src="art.png" alt="夜航主視覺" style="width:100%;max-width:342px;border-radius:16px;border:1px solid rgba(46,230,200,.3);box-shadow:0 0 26px rgba(46,230,200,.18);display:block;margin:0 auto">
+    <div class="cap">點上方日期，看當天兩組站位</div>
+  </div>
+  <div id="panel" style="display:none">
+  <div id="stockbar" style="display:none"></div>
+  <div class="btns">
+    <button class="cp" onclick="copyG(1)"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>複製一組回報</button>
+    <button class="cp" onclick="copyG(2)"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>複製二組回報</button>
+  </div>
+  <div class="hint">點名字＝已到，複製會一併帶入</div>
+  <div class="clrwrap"><button class="clr allin" onclick="markAll()">全部到齊</button><button class="clr" onclick="clearDay()">清除本日勾選</button></div>
+  <div class="cols">
+    <div class="grp g1"><div class="grph" style="color:var(--cT)"><span class="dot" style="background:var(--cT)"></span>一組</div><div id="c1"></div></div>
+    <div class="grp g2"><div class="grph" style="color:var(--cB)"><span class="dot" style="background:var(--cB)"></span>二組</div><div id="c2"></div></div>
+  </div>
+  </div>
+  <div id="adminModal" class="modal" onclick="closeAdmin(event)"><div class="mbox" onclick="event.stopPropagation()">
+    <div id="gate"><input id="pw" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button onclick="tryPw()">→</button></div>
+    <div id="adminBody" style="display:none">
+      <div class="statt" style="color:#ffd166">夜班幹部班表</div><div id="dutyWrap"><iframe src="https://xsos32-design.github.io/roster/"></iframe></div>
+      <div id="statBody"></div>
+      <button class="mclose" onclick="closeAdmin()">關閉</button>
+    </div></div></div>
+  <div id="cornlogo">韋</div>
+  <div id="swapModal" class="modal" onclick="if(event.target.id==='swapModal')this.style.display='none'"><div class="mbox" onclick="event.stopPropagation()">
+    <div class="statt" style="color:#ffd166">換班配對（同一天直接換）</div>
+    <div class="swlab">組別</div><select id="swGrp" class="swsel" onchange="buildSwap()"><option value="1">一組（B系/2140）</option><option value="2">二組（T系/2153）</option></select>
+    <div class="swlab">你的名字</div><select id="swName" class="swsel"></select>
+    <div class="swlab">跟誰換（可不選，不選＝列出全部）</div><select id="swWith" class="swsel"></select>
+    <div class="swlab">我放（你現在的班）</div><select id="swGive" class="swsel"></select>
+    <div class="swlab">想換成</div><select id="swGet" class="swsel"></select>
+    <button id="swapGo" onclick="runSwap()">查詢可換</button>
+    <button id="monthBtn" onclick="copyMonth()">複製此人整月班表</button>
+    <div id="swapRes" style="margin-top:10px"></div>
+    <button class="mclose" onclick="document.getElementById('swapModal').style.display='none'">關閉</button>
+  </div></div>
+  <textarea id="report"></textarea>
+
+<script>
+const MONTH=10,NDAYS=31,YM="115年10月",YEAR=2026;
+const WD=["四","五","六","日","一","二","三"];
+const HOLIDAYS={9:"補假",10:"雙十",25:"光復",26:"補假"};
+const wd=d=>WD[(d-1)%7];
+
+const R1=[
+["A","陳芷琳","本2,B2,B3,本3,L1,B1下,國14,本4,B1上,B$,B5,本5,外B2,5課,L1,本6,國15,44,B1下,本7,B$,6,本8,B6,B2,L9,L9,本1,B3,B1上,44"],
+["B","陳貢鈴","本2,B3,B2,B6,本3,L1,B1下,B$,本4,外B2,B3,L9,本5,國14,44,本6,國15,本7,B1上,L9,本8,B2,L1,B5,本1,外B2,6,國補,本2,B$,B1下"],
+["C","吳佩珊","L1,本2,B5,B2,國14,本3,B5,B1下,L9,本4,44,外B2,B3,本5,本6,B$,B1上,本7,L1,44,國15,本8,B1下,B2,L9,本1,B$,B3,B1上,本2,外B2"],
+["D","陳怡伃","B3,B5,本2,B7,B1下,L9,本3,B2,B7,本4,本5,44,國14,國15,本6,B1上,6,L1,本7,B2,5,B3,本8,B$,B6,B6,本1,外B2,B1下,44,本2"],
+["A","游志士","B1上,L1,本2,本3,B2,B5,B$,本4,B3,B2,L9,本5,44,B1上,L9,本6,B$,B1下,本7,L1,外B2,國15,B5,本8,外B2,44,A,本1,A,本2,A"],
+["B","吳信宜","本2,B1上,B$,本3,國14,B2,L9,L9,本4,44,B1下,B3,本5,外B2,6課,L1,本6,B6,B5,B1下,L1,本7,國15,本8,本1,B7,B1上,B5,本2,B3,B2"],
+["C","吳慶鴻","5,本2,B1上,B3,外B2,本3,L1,44,B2,本4,國14,B1下,國15,本5,B3,L9,L9,本6,B2,B$,本7,本8,B7,B1上,44,本1,L1,B$,外B2,本2,6"],
+["D","李明翰","國14,國15,本2,B1上,44,外B2,本3,本4,L1,L9,本5,B$,B1下,L9,本6,B2,B3,B5,本7,B1上,44,外B2,本8,L1,B$,B1下,本1,6,A,本2,本3"],
+["A","陳泂圖","本2,外B2,L9,本3,B1上,6,B2,本4,44,B3,B6,本5,L1,B1下,國14,本6,國15,外B2,B$,B3,本7,B1上,44,本8,B5,B2,本1,B7,L1,L9,本2"],
+["B","吳晧誠","補8H,本2,國15,國補,國補,本3,國補,國補,A,本4,A,本5,A,本5,A,A,A,本6,A,A,A,本7,本8,A,A,本1,A,A,A,本2,國16"],
+["C","黃安祺","6,本2,國14,L9,本3,B1上,44,B5,國15,本4,外B2,6,B$,本5,B1下,B3,B5,本6,本7,本8,B2,B$,B3,B7,本1,L1,44,B1上,B2,本2,B5"],
+["D","陳雨彤","外B2,L9,本2,B1下,5,本3,本4,L1,B$,B6,本5,5,B1上,B2,本6,國14,L1,B2,國15,本7,B3,44,B1上,本8,本1,B8,本2,B1下,6,喪5,本3"],
+["A","陳世傑","B$,6,B1下,外B2,本2,44,本3,本4,國14,L1,B1上,本5,6,B3,國15,本6,外B2,L9,L9,本7,6,L1,外B2,本8,B1下,B3,本2,本2,44,B2,B$"],
+["B","沙上智","本2,國14,外B2,44,本3,B3,6課,B1上,本4,B5,本5,國15,本6,L1,B2,B1下,本7,B$,6,外B2,本8,B1下,L9,L9,本1,B5,B2,44,本2,L1,B1上"],
+["C","林洧盈","B2,本2,44,國14,B$,本3,B1上,B3,B5,本4,B7,本5,B5,國15,B$,6,B1下,本6,外B2,6,本7,本8,B6,B1下,L1,本1,外B2,L9,L9,本2,B3"],
+["D","李承屏","B1下,44,本2,L1,6,B$,本3,本4,外B2,B1下,本5,國14,B2,44,本6,B5,B2,B3,本7,B5,L9,L9,本8,國15,B1上,B$,B3,本1,A,本2,本3"],
+["A","蔡亞璇","44,B$,6,本2,本3,國14,國15,本4,6,B1上,L1,B2,本5,B$,外B2,44,本6,B7,B3,本7,B1下,5,本8,B3,B7,B1上,B7,本1,B5,外B2,L9"],
+["B","湯文愷","本2,B1下,L1,B$,L9,本3,B3,外B2,本4,B7,B2,B1上,本5,K8視訊,5,國14,本6,B1上,44,本7,本8,國15,B$,外B2,國補,本1,5,B2,本2,B1下,L1"],
+["C","朱韋任","L9,本2,國14,B5,B3,本3,外B2,6,B1下,本4,B$,L1,L9,本5,B1上,外B2,44,本6,國15,本7,B1上,本8,B2,44,B3,本1,B1下,L1,B$,B5,本2"],
+];
+const R2=[
+["A","李郁欣","T1上,外T2,本2,國14,本3,L1,T2,本4,L1,外T2,T1下,45上,本5,T3,國15,本6,T$,T1下,本7,45上,T3,本8,T2,45下,T$,本1,進階T3,本2,T1上,45下,T5"],
+["B","麥嘉琪","本2,T2,45上,T3,45下,本3,A,T$,本4,T$,外T2,L1,本5,A,國14,國15,本6,本7,T1上,T3,本8,L1,月會外T2,T1下,L9,本1,進階T2,T5,本2,T1上,45上"],
+["C","黃珮筑","45下,T1下,本2,國14,本3,T1上,外T2課,T5,本4,T1下,T3,T3,45上,本5,45上,T2,本6,本7,國15,T2,外T2,本8,T$,L1,T6,本1,L1,進階45下,T5,T6,本2"],
+["D","梁雅棋","本2,本3,T1下,T6,T$,45上,本4,T3,T2,T5,本5,T$,外T2,T1上課,本6,45上,45下,外T2,本7,45下,T2,國14,本8,國15,L1,T8,本1,T1上,T1下,L1,本2"],
+["A","陳建吉","國14,L1,外T2,本2,T1上,T3,45下,本3,T1下,本4,本5,國15,T2,T1下,外T2課,本6,L1,T6,T5,本7,45上,T3,本8,T2,45上,T$,A,本1,進階45下,國16,本2"],
+["B","張語昕","本1,本2,L1,T1上,本3,T2,T1下,45上,45下,本4,T5,T1下,本5,T2,T$,外T2,本6,本7,國15,L1,本8,45下,T1上,T6,本1,T7,進階45上,T3,本2,T3,T$"],
+["C","謝宛茹","45上,本2,國14,T2,T3,本3,L1,T1上,T5,本4,國15,45下,T$,本5,T1下,T1下,本6,本7,T2,外T2,L1,本8,45下,T$,T3,T5,T1上,進階45上,A,國16,本2"],
+["D","沈嘉翎","T$,T3,本2,國14,國15,國補,本3,本4,外T2,T1上,T6,本5,T1下,45下,L1,本6,T2,45上,本7,T$,T1下,外T2,本8,T1上,T5,45下,本1,L1,進階T2,T5,本2"],
+["A","李欣","外T2,T5,T5,本3,T2,外T2,國14,本4,45上,T6,45下,本5,T3,A,本6,L1,T1下,T2,T$,本7,國15,T1上,T6,本8,T1上,T3,進階45下,本1,本2,T$,T1下"],
+["B","林軒弘","本2,45下,T$,L1,本3,T5,T1上,國14,本4,L1,T2,國補,本5,45上,L9,本6,本7,T5,45下,國15,本8,T1下,T3,外T2,本1,T1上,外T2,進階T2,本2,T1下,T3"],
+["C","賴姿伶","T2,本2,T3,45下,A,本3,T$,外T2,本4,45上,T1上,國14,L1,本5,T2,T5,本6,本7,T3,T5,L9,本8,T1下,國15,外T2,L1,本1,T1下,進階45上,本2,T1上"],
+["D","蔡宗樺","T3,T1上,T2,本2,外T2,T$,本3,T1下,L9,本4,本5,T1上,T5,國14,本6,T3,45上,L1,本7,T1下,45下,國15,本8,T5,45下,外T2,本1,進階T$,L1,本2,T2"],
+["A","黃貽靖","A,45上,本2,T1下,45上,45下,T3,本3,T1上,本4,本5,國14,45下,外T2,45下,L9,本6,45下,T1下,本7,T1上,T2,L1,本8,本1,45上,進階T$,本2,A,外T2,45下"],
+["B","高玉嵐","本2,T$,T1上,外T2,本3,國14,T5,T2,本4,45下,L1,T2,本5,視訊K8,T1上,本6,T3,T$,L1,國15,本7,45上,45上,本8,本1,T1下,L9,L9,本2,45上,外T2"],
+["C","何祐銓","T1下,本2,45下,T$,T1下,本3,45上,L1,國14,本4,T$,外T2,本5,本6,T3,T1上,T5,本7,45上,T1上,國15,本8,T5,T3,T2,本1,A,國補,進階外T2,本2,L1"],
+["D","林雅雯","L1,A,本2,T5,L9,本3,本4,45下,T3,T2,45上,本5,T1上,L1,本6,T$,T1上,T3,外T2,本7,國14,國15,本8,45上,T1下,T6,本1,外T2,進階T3,T2,本2"],
+["D","孟憲鴻","L9,L9,本2,45上,L1,T1下,本3,本4,T$,T3,本5,L9,L9,L9,本6,45下,外T2,T1上,本7,國14,T$,T$,國15,本8,本1,T2,T1下,國補,進階T$,本2,國16"],
+["B","羅貽辰","本2,國14,休,休,本3,休,休,休,本4,休,國15,本5,K8,K8,K8,L9,本6,本7,休,休,本8,休,休,休,本1,休,休,本2,新人考,休,休"],
+["B","羅羽希","本2,病16,病17,病18,本3,病19,病20,國14,本4,病21,病22,病23,本5,病24,病25,病26,本6,病27,病28,國15,本7,病29,病30,本8,無薪,無薪,無薪,無薪,無薪,無薪,無薪"],
+["B","李玉聖","本2,A,休,休,本3,休,休,休,本4,休,休,本5,本6,國14,國15,本7,休,休,休,休,本8,休,休,休,本1,休,本2,進階T6,休,休,休"],
+];
+const CODES1=["B1上","B1下","B2","外B2","B3","B$","B5","B6","B7","B8","44","L1","L9"];
+const CODES2=["T1上","T1下","T2","外T2","T3","T$","T5","T6","T7","T8","45上","45下","L1","L9"];
+const TRAIN1={7:[["NIKKA","沙上智"]],10:[["威士忌·B5","湯文愷、陳泂圖"]],11:[["威士忌·B5","林洧盈、陳芷琳、陳貢鈴"]],12:[["威士忌·北區","黃安祺、吳佩珊、吳慶鴻"]],14:[["視訊會議","湯文愷"],["Glenfarclas","陳芷琳"]],15:[["Davidoff","吳信宜"]],17:[["威士忌·南大","陳怡伃、陳世傑、李承屏、李明翰"]],23:[["部門月會","陳世傑、林洧盈"]],25:[["威士忌·B5","蔡亞璇、朱韋任、游志士"]],26:[["威士忌·B5","吳信宜、陳雨彤、沙上智"]]};
+const TRAIN2={7:[["NIKKA","黃珮筑"]],10:[["威士忌·B5","李欣、孟憲鴻"]],11:[["威士忌·B5","沈嘉翎、麥嘉琪、李郁欣"]],12:[["威士忌·北區","高玉嵐、謝宛茹"]],14:[["視訊會議","高玉嵐"],["Glenfarclas","梁雅棋"]],15:[["Davidoff","陳建吉"]],17:[["威士忌·南大","何祐銓、蔡宗樺"]],23:[["部門月會","黃貽靖、羅貽辰"]],25:[["威士忌·B5","黃珮筑、賴姿伶"]],26:[["威士忌·B5","張語昕、林雅雯、羅貽辰、梁雅棋、陳建吉"]]};
+
+function parse(raw,gnum){let mark="",b=raw;
+  let pj=b.match(/^(進階)/); if(pj){mark+="進階";b=b.slice(2);}
+  let p=b.match(/^(課|月會|視訊|基礎)/); if(p){mark+=(mark?"・":"")+p[1];b=b.slice(p[1].length);}
+  let s=b.match(/(課|月會|視訊|基礎)$/); if(s){mark+=(mark?"・":"")+s[1];b=b.slice(0,-s[1].length);}
+  let md=b.match(/^([1-8])$/); if(md){b=(gnum===1?"B":"T")+md[1];}
+  return {base:b,mark};}
+function tmap(TR,d){const m={};(TR[d]||[]).forEach(t=>t[1].split("、").forEach(n=>m[n]=t[0]));return m;}
+const CK=(function(){try{return JSON.parse(localStorage.getItem("ck"+YEAR+"_"+MONTH)||"{}")}catch(e){return {}}})();
+function ckKey(d,g,n){return d+"::"+g+"::"+n;}
+function saveCK(){try{localStorage.setItem("ck"+YEAR+"_"+MONTH,JSON.stringify(CK))}catch(e){}}
+function toggle(d,g,n){const k=ckKey(d,g,n);if(CK[k])delete CK[k];else CK[k]=1;saveCK();rerender();}
+function markAll(){if(!curD)return;[[R1,CODES1,1],[R2,CODES2,2]].forEach(function(a){var R=a[0],C=a[1],g=a[2];var gr=group(R,C,curD,tmap(g===1?TRAIN1:TRAIN2,curD),g);C.forEach(function(c){(gr.map[c]||[]).forEach(function(x){CK[ckKey(curD,g,x.name)]=1;});});});saveCK();rerender();}
+function clearDay(){if(!curD)return;Object.keys(CK).forEach(k=>{if(k.indexOf(curD+"::")===0)delete CK[k]});saveCK();rerender();}
+function rerender(){if(!curD)return;renderCol(R1,CODES1,curD,tmap(TRAIN1,curD),document.getElementById("c1"),1);renderCol(R2,CODES2,curD,tmap(TRAIN2,curD),document.getElementById("c2"),2);}
+function cls(c){if(c[0]==="外")return"cX";if(c[0]==="T")return"cT";if(c[0]==="B")return"cB";if(c[0]==="4")return"c4";if(c[0]==="L")return"cL";if(c[0]==="K")return"cX";return"";}
+function runSet(d){function occ(R,C,g,code){for(var i=0;i<R.length;i++){var raw=(R[i][2].split(",")[d-1]||"").trim();if(!raw||raw==="休")continue;var pr=parse(raw,g);if(pr.base===code)return R[i][1];}return null;}
+  var s={};[5,6].forEach(function(n){var bn=occ(R1,CODES1,1,"B"+n),tn=occ(R2,CODES2,2,"T"+n);if(bn&&!tn)s[bn]=1;if(tn&&!bn)s[tn]=1;});return s;}
+function group(R,CODES,d,tm,gnum){const map={};CODES.forEach(c=>map[c]=[]);const other={};const rs=runSet(d);
+  R.forEach(p=>{let raw=(p[2].split(",")[d-1]||"").trim();
+    if(!raw||raw==="休"){return;}
+    const {base,mark}=parse(raw,gnum);let ann=mark?mark.split("・").map(m=>m==="課"?"上課":m).join("・"):(tm[p[1]]?"上課":"");if(rs[p[1]]&&(base==="B5"||base==="B6"||base==="T5"||base==="T6")){ann=ann?ann+"・跑":"跑";}
+    const it={name:p[1],grp:p[0],ann};
+    if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
+  return {map,other};}
+/* 盤點表：外層鍵＝月份，內層鍵＝盤點日，提醒出現在前一天（兩個月一輪：10月盤、12月盤） */
+var STOCKM={10:{"2":["08 菸","Dunhill【260】、State Express 555【611】、Virginia【612】、Vogue【613】、LUCKY STRIKE【676】、捲菸【811】"],"3":["09 酒","威士忌【822】"],"4":["09 酒","金車【525】、Glenrothes【536】、MACALLAN【568】、Highland Park【584】、純麥威士忌【831】"],"6":["08 菸","Mevius【607】、MI-NE峰【659】、Caster【672】、Cigaronne【6102】、捲菸【811】"],"7":["09 酒","酒類無折扣／無抽傭【838】、特蘇無折扣酒類【840】"],"8":["08 菸","Davidoff【603】、Parliament【609】、Winston【6261】、P&S【6554】、捲菸【811】"],"9":["07 巧","Modernline【732】、DAIKO【704】、Kobe Fugetsudo【7097】、Lotte【7089】、UHA【7102】、有樂【7106】"],"13":["08 菸","雪茄【812】、菸絲【813】、菸斗配件【970】、雪茄盒【979】、雪茄菸灰缸【978】"],"14":["07 巧","寶艦【953】、LINDT【713】、Storck【7092】、Haribo【7082】"],"15":["08 菸 ＋ 00","Kent【604】、Seven Stars【6042】、Marlboro【606】、Mevius【607】、L&M【671】、ESSE【683】、捲菸【811】／543 零星品牌、992 其它類贈品"],"16":["09 酒","Tamdhu【5521】、GLENFIDDICH【565】、BALVENIE【597】、GlenDronach【5991】、Glen Grant【5992】、純麥威士忌【831】"],"17":["00 贈品","菸酒類贈品【892】、小酒贈品【895】"],"18":["09 酒","白蘭地【821】、白酒【826】"],"20":["08 菸","Ploom X【6191】、Mevius【607】、MI-NE峰【659】、Caster【672】、加熱菸【815】、加熱元件【816】、捲菸【811】"],"21":["07 巧","F.N.A【702】、Zaini【7079】、Shi Le Po【7078】、Hershey【7076】、Chupa Chups【7081】、Belgian【7083】、M&M'S【753】、Hawaiian Host【767】"],"24":["09 酒","Hunter Laing【290】、Bruichladdich【511】、Tomatin【5121】、Glenfarclas【557】、Deanston【5312】、Douglas【550】、Hinotori【5512】、Chieftain's【552】、台灣菸酒公司【593】、東方者【6918】、Gordon & Macphail【6947】、Rosebank【6949】、Macleod【6933】、純麥威士忌【831】"],"28":["09 酒","伏特加酒【820】、利口酒【823】、蒸餾酒【828】、琴酒【829】、黃酒【832】、龍舌蘭酒【833】、穀物威士忌【836】"]}};
+/* 沒有這個月的盤點表就整塊自動隱藏（例：11 月不盤） */
+function stockOf(d){var M=STOCKM[MONTH];if(!M)return null;var k=M[d+1];return k?{d:d+1,c:k[0],t:k[1]}:null;}
+function stockBar(d){var e=document.getElementById("stockbar");if(!e)return;var s=stockOf(d);
+ if(!s){e.style.display="none";e.innerHTML="";return}
+ e.style.display="";
+ var items=String(s.t).split(/[、／]/).map(function(x){x=x.trim();if(!x)return null;var m=x.match(/^(.*?)\s*【(\d+)】$/);if(m)return {n:m[1],c:m[2]};m=x.match(/^(\d+)\s*(.+)$/);if(m)return {n:m[2],c:m[1]};return {n:x,c:""};}).filter(Boolean);
+ e.innerHTML='<div class="sbtop"><span class="sbl">📦 盤點提醒</span><span class="sbw">明天 '+MONTH+'/'+s.d+'（週'+wd(s.d)+'）</span></div>'
+  +'<div class="sbh"><span class="sbc">'+s.c+'</span><span class="sbn">共 '+items.length+' 項</span></div>'
+  +'<div class="sbg">'+items.map(function(x){return '<div class="sbi2">'+(x.c?'<span class="sbk">'+x.c+'</span>':'')+'<span class="sbm">'+x.n+'</span></div>';}).join("")+'</div>';}
+function reportText(R,CODES,d,tm,gnum){const g=group(R,CODES,d,tm,gnum);const lines=[`${MONTH}/${d}${R===R1?"一組":"二組"}點名`,""];
+  CODES.forEach(c=>{if(c==="K8"&&!g.map[c].length)return;
+    const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")+(CK[ckKey(d,gnum,x.name)]?"✅":"")).join("、");lines.push(`${c}：${nm||"🈚️"}`);});
+  const cl=classLines(d,gnum);if(cl.length){lines.push("","📚 今日上課");cl.forEach(x=>lines.push(`課程：${x.t}｜地點：${x.p||"未填"}｜${x.n}`));}
+  return lines.join("\n");}
+function classLines(d,gnum){const TR=(gnum===1?TRAIN1:TRAIN2)[d]||[];const seen={};
+  const L=TR.map(t=>{const a=String(t[0]).split("·");t[1].split("、").forEach(n=>seen[n]=1);return {t:a[0],p:a[1]||"",n:t[1]};});
+  const R=gnum===1?R1:R2,ex={};R.forEach(p=>{const raw=(p[2].split(",")[d-1]||"").trim();if(!raw||seen[p[1]])return;const m=parse(raw,gnum).mark;if(m)(ex[m]=ex[m]||[]).push(p[1]);});
+  const NM={"課":"上課（班表未註明課程）","進階":"進階訓練","基礎":"基礎訓練","月會":"部門月會","視訊":"視訊會議"};Object.keys(ex).forEach(m=>{const t=NM[m]||m;const hit=L.find(x=>x.t===t);if(hit)hit.n+="、"+ex[m].join("、");else L.push({t:t,p:"",n:ex[m].join("、")});});return L;}
+const ICHK='<svg class="ic chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+const ICAP='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>';
+function renderCol(R,CODES,d,tm,el,gnum){const g=group(R,CODES,d,tm,gnum);let h="";
+  CODES.forEach(c=>{const L=g.map[c]; if(c==="K8"&&!L.length)return;
+    const nm=L.length?L.map(x=>{const on=!!CK[ckKey(d,gnum,x.name)];
+      return `<span class="nm${on?' on':''}" onclick="toggle(${d},${gnum},'${x.name}')">${x.name}${x.ann?`<span class=mk>${x.ann.indexOf("跑")===0?"":ICAP}（${x.ann}）</span>`:""}${on?" ✅":""}</span>`;}).join("、"):`<span class=none>🈚️</span>`;
+    h+=`<div class=row><span class="code ${cls(c)}">${c}</span><span class=who>${nm}</span></div>`;});
+  const CORE={1:["B1上","B1下","B2","外B2","B3","B$","44","L1"],2:["T1上","T1下","T2","外T2","T3","T$","45上","45下","L1"]};const _miss=(CORE[gnum]||[]).filter(function(c){return !(g.map[c]&&g.map[c].length);});if(_miss.length)h='<div class=warn>⚠ 缺：'+_miss.join("　")+'</div>'+h;
+  const _cl=classLines(d,gnum);if(_cl.length){h+='<div class=sub-h>'+ICAP+'今日上課</div>'+_cl.map(x=>'<div class=clsl><b>'+x.t+'</b>'+'<span class=clsp>'+(x.p?'📍'+x.p:'地點未填')+'</span>'+'<span class=clsn>'+x.n+'</span></div>').join('');}
+  const ok=Object.keys(g.other).sort();
+  if(ok.length){h+=`<div class=sub-h><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>休假・其他</div>`;const catOf=function(c){if(c[0]==="本")return"休假";if(c[0]==="國"||c.indexOf("補")>=0)return"國定/補休";if(c==="A")return"特休";if(c[0]==="病")return"病假";if(c.indexOf("無薪")>=0)return"無薪";if(c.indexOf("喪")>=0)return"喪假";if(c.indexOf("新人考")>=0)return"新人考";return"其他";};const cats={};ok.forEach(function(c){var k=catOf(c);cats[k]=(cats[k]||[]).concat(g.other[c]);});["休假","特休","國定/補休","病假","喪假","無薪","新人考","其他"].forEach(function(k){if(cats[k]&&cats[k].length)h+='<div class=orow><span class=otag>'+k+'</span>'+cats[k].join("、")+'</div>';});}
+  el.innerHTML=h;}
+
+const datesEl=document.getElementById("dates");
+const _t=new Date();const TODAY=(_t.getFullYear()===YEAR&&_t.getMonth()+1===MONTH)?_t.getDate():null;
+WD.forEach(w=>{const e=document.createElement("div");e.className="wk"+(w==="六"?" sat":w==="日"?" sun":"");e.textContent=w;datesEl.appendChild(e);});
+for(let d=1;d<=NDAYS;d++){const c=document.createElement("div");const w=wd(d);
+  c.className="d"+(w==="六"?" sat":w==="日"?" sun":"")+(HOLIDAYS[d]?" hd":"")+(d===TODAY?" today":"");
+  c.innerHTML=`<span class=num>${d}</span><span class=wd>${w}</span>${d===TODAY?`<span class=today-t>今天</span>`:""}${HOLIDAYS[d]?`<span class=hol>${HOLIDAYS[d]}</span>`:""}`;
+  c.onclick=()=>sel(d,c);datesEl.appendChild(c);}
+let curD=null;
+function swGroup(){return document.getElementById("swGrp").value==="1"?[R1,CODES1,1]:[R2,CODES2,2];}
+function buildSwap(){var a=swGroup();var R=a[0],C=a[1];
+  document.getElementById("swName").innerHTML=R.map(function(p){return '<option>'+p[1]+'</option>';}).join("");
+  document.getElementById("swWith").innerHTML='<option value="__all__">不指定（列出全部）</option>'+R.map(function(p){return '<option>'+p[1]+'</option>';}).join("");
+  var opts=C.filter(function(c){return c!=="K8";}).map(function(c){return '<option>'+c+'</option>';}).join("");
+  document.getElementById("swGive").innerHTML=opts;document.getElementById("swGet").innerHTML=opts;
+  document.getElementById("swapRes").innerHTML="";}
+function openSwap(){buildSwap();document.getElementById("swapModal").style.display="flex";}
+function runSwap(){var a=swGroup();var R=a[0],g=a[2];var me=document.getElementById("swName").value;
+  var A=document.getElementById("swGive").value,B=document.getElementById("swGet").value;var WITH=document.getElementById("swWith").value;
+  var meRow=null;R.forEach(function(p){if(p[1]===me)meRow=p;});if(!meRow)return;
+  var md=meRow[2].split(",");var res=[];window._swaps=[];
+  for(var d=0;d<NDAYS;d++){var mine=parse((md[d]||"").trim(),g).base;if(mine!==A)continue;
+    R.forEach(function(p){if(p[1]===me)return;if(WITH!=="__all__"&&p[1]!==WITH)return;var th=parse((p[2].split(",")[d]||"").trim(),g).base;
+      if(th===B){var _i=window._swaps.length;window._swaps.push({d:d+1,w:WD[d%7],me:me,A:A,them:p[1],B:B});res.push('<div class=swr>'+'<div style="color:#ffd166;font-weight:800;margin-bottom:4px">'+MONTH+'/'+(d+1)+'（'+WD[d%7]+'） 可以換</div>'+'<div>你（'+me+'）：'+A+' → <b style="color:#5ff6df">換到 '+B+'</b></div>'+'<div>'+p[1]+'：'+B+' → <b style="color:#ff85a6">換到 '+A+'</b></div>'+'<button class=swmsg onclick="copyMsg('+_i+')">複製訊息給 '+p[1]+'</button>'+'</div>');}});}
+  var two=[];
+  R.forEach(function(p){if(p[1]===me)return;if(WITH!=="__all__"&&p[1]!==WITH)return;var qd=p[2].split(",");var DA=[],DB=[];
+    for(var d=0;d<NDAYS;d++){var mb=parse((md[d]||"").trim(),g).base;var qb=parse((qd[d]||"").trim(),g).base;if(mb===A&&qb===B)DA.push(d+1);if(mb===B&&qb===A)DB.push(d+1);}
+    if(DA.length&&DB.length&&DA[0]!==DB[0])two.push({q:p[1],d1:DA[0],d2:DB[0]});});
+  var twoHTML=two.length?('<div style="color:#ffd166;font-weight:700;font-size:12.5px;margin:12px 0 6px">🔁 兩天對等換（各換一次、更公平）</div>'+two.map(function(t){return '<div class=swr><div style="color:#ffd166;font-weight:800;margin-bottom:4px">跟 '+t.q+' 兩天互換</div><div>'+MONTH+'/'+t.d1+'（'+WD[(t.d1-1)%7]+'）：你 '+A+' ↔ '+t.q+' '+B+'</div><div>'+MONTH+'/'+t.d2+'（'+WD[(t.d2-1)%7]+'）：你 '+B+' ↔ '+t.q+' '+A+'</div></div>';}).join("")):'';
+  var sameHTML=res.length?('<div style="color:#7af0dd;font-weight:700;font-size:12.5px;margin-bottom:6px">✅ 同一天可直接換 '+res.length+' 天</div>'+res.join("")):(twoHTML?'':'<div class=swr style="color:#7a8a94">沒有可直接對換的（換個代號或對象試試）</div>');
+  document.getElementById("swapRes").innerHTML=sameHTML+twoHTML;}
+function copyMonth(){var a=swGroup();var R=a[0],g=a[2];var me=document.getElementById("swName").value;var row=null;R.forEach(function(p){if(p[1]===me)row=p;});if(!row)return;
+  var days=row[2].split(",");var lines=[me+" "+MONTH+"月班表"];
+  for(var d=0;d<NDAYS;d++){var raw=(days[d]||"").trim();var pr=parse(raw,g);var show=(!raw||raw==="休")?"休":(pr.base+(pr.mark?"·"+pr.mark:""));lines.push(MONTH+"/"+(d+1)+"（"+WD[d%7]+"） "+show);}
+  try{navigator.clipboard.writeText(lines.join("\n"));}catch(e){}
+  var btn=document.getElementById("monthBtn");if(btn){var o=btn.textContent;btn.textContent="已複製整月 ✓";setTimeout(function(){btn.textContent=o;},1500);}}
+function copyMsg(i){var s=window._swaps[i];if(!s)return;var btn=(typeof event!=="undefined"&&event&&event.target)?event.target:null;
+  var t=s.them+'你好，'+MONTH+'/'+s.d+'（'+s.w+'）我的 '+s.A+' 想跟你的 '+s.B+' 同一天互換（對調、不相欠），方便嗎？— '+s.me;
+  try{navigator.clipboard.writeText(t);}catch(e){}
+  if(btn){var o=btn.textContent;btn.textContent='已複製 ✓';setTimeout(function(){btn.textContent=o;},1500);}}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+function openAdmin(){document.getElementById("adminModal").style.display="flex";if(sessionStorage.getItem("adm")==="1")unlockAdm();else setTimeout(()=>document.getElementById("pw").focus(),50);}
+function tryPw(){if(document.getElementById("pw").value.trim().toLowerCase()==="user"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
+function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("statBody").innerHTML=statsHTML();}
+function closeAdmin(e){if(e&&e.target&&e.target.id!=="adminModal")return;document.getElementById("adminModal").style.display="none";}
+function statsHTML(){function tbl(R,C,g,tag){var P=g===1?"B":"T";var codes=[P+"1上",P+"1下",P+"2","外"+P+"2"];var lab=["1上","1下","2","外2"];
+  var data=R.map(function(p){var days=p[2].split(",");var cc={},tot=0,any=0;days.forEach(function(raw){raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(C.indexOf(pr.base)>=0)any++;if(codes.indexOf(pr.base)>=0){cc[pr.base]=(cc[pr.base]||0)+1;tot++;}});return {n:p[1],cc:cc,tot:tot,any:any};});
+  var act=data.filter(function(r){return r.any>0;});var N=act.length||1;
+  var avg={};codes.forEach(function(c){avg[c]=act.reduce(function(a,r){return a+(r.cc[c]||0);},0)/N;});var avgT=act.reduce(function(a,r){return a+r.tot;},0)/N;
+  function f1(x){return (Math.round(x*10)/10).toFixed(1);}
+  function tone(v,a){return v-a>=1?" up":(a-v>=1?" dn":"");}
+  var head='<div class="sh2 sn2">姓名</div>'+lab.map(function(c){return '<div class=sh2>'+c+'</div>';}).join("")+'<div class="sh2 tot">合計</div>';
+  var body=data.map(function(r){if(!r.any)return '<div class="sn2 off">'+r.n+'</div>'+codes.map(function(){return '<div class=z>·</div>';}).join("")+'<div class="tot z">—</div>';
+    return '<div class=sn2>'+r.n+'</div>'+codes.map(function(c){var v=r.cc[c]||0;return '<div class="'+(v?"":"z")+tone(v,avg[c])+'">'+v+'</div>';}).join("")+'<div class="tot'+tone(r.tot,avgT)+'">'+r.tot+'</div>';}).join("");
+  var foot='<div class="sn2 avg">平均</div>'+codes.map(function(c){return '<div class=avg>'+f1(avg[c])+'</div>';}).join("")+'<div class="tot avg">'+f1(avgT)+'</div>';
+  return '<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　'+MONTH+'月 · 公平性（1上／1下／2／外2）</div><div class=fairlg><span class=up>高於平均 1 次以上</span><span class=dn>低於平均 1 次以上</span><span>平均只算本月有站位的 '+act.length+' 人</span></div><div class=cgrid style="grid-template-columns:minmax(64px,1.3fr) repeat(5,1fr);min-width:0">'+head+foot+body+foot+'</div>';}
+  function bars(R,C,g,tag){var rows=R.map(function(p){var days=p[2].split(",");var sta=0,run=0,hol=0;
+    days.forEach(function(raw,i){raw=(raw||"").trim();var d=i+1;if(!raw||raw==="休")return;var pr=parse(raw,g);
+      if(C.indexOf(pr.base)>=0){sta++;if(pr.base[0]==="跑")run++;if(HOLIDAYS[d])hol++;}});
+    return {n:p[1],sta:sta,run:run,hol:hol};});
+    var mx=Math.max(1,Math.max.apply(null,rows.map(function(r){return r.sta;})));
+    var col=g===1?"linear-gradient(90deg,#19c9ad,#2ee6c8)":"linear-gradient(90deg,#d61e55,#ff5d7a)";
+    var x='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　站位天數 · 公平性</div><div class=barwrap>';
+    var sa=rows.map(function(r){return r.sta;});var mxS=Math.max.apply(null,sa);var ps=sa.filter(function(x){return x>0;});var mnS=ps.length?Math.min.apply(null,ps):0;
+    rows.forEach(function(r){var w=Math.round(r.sta/mx*100);var tg=(r.sta===mxS&&mxS>0)?' <b style="color:#ff85a6">最多</b>':((r.sta===mnS&&r.sta>0)?' <b style="color:#5ff6df">最少</b>':'');
+      x+='<div class=barrow><div class=bn>'+r.n+'</div><div class=bartrk><div class=barfill style="width:'+w+'%;background:'+col+'"></div></div><div class=barnum>'+r.sta+'天 跑'+r.run+' 假'+r.hol+tg+'</div></div>';});
+    return x+'</div>';}
+  return tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組")+bars(R1,CODES1,1,"一組")+bars(R2,CODES2,2,"二組");}
+function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
+  document.getElementById("emptyArt").style.display="none";document.getElementById("panel").style.display="";
+  const t=document.getElementById("title");t.className="head";
+  t.innerHTML=`<span class=big>${MONTH}月${d}日<small>週${wd(d)}</small></span>${HOLIDAYS[d]?`<span class=chip>${HOLIDAYS[d]}</span>`:""}`;
+  stockBar(d);
+  renderCol(R1,CODES1,d,tmap(TRAIN1,d),document.getElementById("c1"),1);
+  renderCol(R2,CODES2,d,tmap(TRAIN2,d),document.getElementById("c2"),2);}
+function copyG(g){if(!curD){return;}
+  const txt=g===1?reportText(R1,CODES1,curD,tmap(TRAIN1,curD),1):reportText(R2,CODES2,curD,tmap(TRAIN2,curD),2);
+  const ta=document.getElementById("report");ta.value=txt;ta.style.left="0";ta.focus();ta.select();ta.setSelectionRange(0,99999);
+  try{document.execCommand("copy")}catch(e){} if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>{});
+  ta.blur();ta.style.left="-9999px";
+  const b=document.querySelectorAll(".cp")[g-1];const o=b.textContent;b.textContent="已複製 ✓";setTimeout(()=>b.textContent=o,1500);}
+</script>
+<style>
+#stockbar{border:1.5px solid #e6ab4d;border-left:6px solid #e6ab4d;background:rgba(230,171,77,.09);border-radius:10px;padding:9px 12px;margin:0 0 12px;text-align:left}
+#stockbar .sbl{font:900 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;color:#05070a;background:#e6ab4d;border-radius:5px;padding:3px 8px;display:inline-block;margin-bottom:7px}
+#stockbar .sbh{font:800 14px/1.4 "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#e6ab4d;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#stockbar .sbi{font-size:15px}
+#stockbar .sbc{background:#e6ab4d;color:#05070a;border-radius:6px;padding:1px 8px;font-size:12.5px;font-weight:900}
+#stockbar .sbt{font-size:13px;line-height:1.75;color:#eafdff;margin-top:5px;word-break:break-word}
+#myBar{display:flex;justify-content:center;align-items:center;gap:8px;margin:0 0 10px}
+#mySel{appearance:none;-webkit-appearance:none;background:#05070a;color:var(--ink,#eafdff);border:1.5px solid var(--t40,#2ee6c8);border-radius:999px;padding:7px 30px 7px 14px;font:800 14px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;box-shadow:0 0 12px rgba(46,230,200,.18);background-image:linear-gradient(45deg,transparent 50%,var(--t40,#2ee6c8) 50%),linear-gradient(135deg,var(--t40,#2ee6c8) 50%,transparent 50%);background-position:calc(100% - 15px) 52%,calc(100% - 10px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+#mySel.m2{border-color:var(--t53,#ff2d6e);box-shadow:0 0 12px rgba(255,45,110,.2)}
+.d .my{font:800 10px/1.15 ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:3px;padding:1px 4px;border-radius:5px;white-space:nowrap;max-width:100%;overflow:hidden}
+.d .my.m1{color:var(--t40,#2ee6c8);background:rgba(46,230,200,.13)}
+.d .my.m2{color:var(--t53,#ff2d6e);background:rgba(255,45,110,.13)}
+.d .my.rest{color:#7d8a90;background:none;font-family:"Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif}
+.d .my .mk{color:var(--amber,#e6ab4d)}
+.d.myoff:not(.active):not(.today){opacity:.6}
+.nm.me{outline:1.5px solid currentColor;border-radius:6px;padding:0 3px;font-weight:900}
+</style>
+<script>
+/* 我的班模式：選自己名字 → 月曆每格顯示當天站位／休 */
+(function(){
+ var KEY='rc_myname';
+ var dEl=document.getElementById('dates'); if(!dEl) return;
+ var bar=document.createElement('div'); bar.id='myBar';
+ var s=document.createElement('select'); s.id='mySel'; s.setAttribute('aria-label','我的班');
+ function opts(R,g,lab){return '<optgroup label="'+lab+'">'+R.map(function(p){return '<option value="'+g+'|'+p[1]+'">'+p[1]+'</option>';}).join('')+'</optgroup>';}
+ s.innerHTML='<option value="">👤 我的班：選擇名字</option>'+opts(R1,1,'一組')+opts(R2,2,'二組');
+ bar.appendChild(s); dEl.parentNode.insertBefore(bar,dEl);
+ var me=null; try{me=localStorage.getItem(KEY)}catch(e){}
+ function rowOf(v){if(!v)return null;var g=+v.split('|')[0],n=v.slice(2);var R=g===1?R1:R2;for(var i=0;i<R.length;i++)if(R[i][1]===n)return {g:g,n:n,days:R[i][2].split(',')};return null;}
+ function label(raw,g){raw=(raw||'').trim();
+  if(!raw||raw==='休'||/^本/.test(raw)||/^國/.test(raw)||raw.indexOf('補')>=0)return {t:'休',rest:1};
+  if(raw==='A')return {t:'特休',rest:1};
+  if(/^病/.test(raw))return {t:'病假',rest:1};
+  if(raw.indexOf('無薪')>=0)return {t:'無薪',rest:1};
+  if(raw.indexOf('喪')>=0)return {t:'喪假',rest:1};
+  if(raw==='事')return {t:'事假',rest:1};
+  var p=parse(raw,g);return {t:p.base,mk:p.mark};}
+ function paint(){
+  var r=rowOf(me); var cells=dEl.querySelectorAll('.d');
+  s.value=r?me:''; s.className=r?('m'+r.g):'';
+  if(r&&s.options[s.selectedIndex])s.options[s.selectedIndex].text='👤 '+r.n+'（'+(r.g===1?'一組':'二組')+'）';
+  for(var i=0;i<cells.length;i++){var c=cells[i];var old=c.querySelector('.my');if(old)old.remove();c.classList.remove('myoff');
+   if(!r)continue; var L=label(r.days[i],r.g); var e=document.createElement('span');
+   e.className='my '+(L.rest?'rest':'m'+r.g); e.textContent=L.t;
+   if(L.mk){var m=document.createElement('span');m.className='mk';m.textContent='•';e.appendChild(m);e.title=L.mk;}
+   c.appendChild(e); if(L.rest)c.classList.add('myoff');}
+  mark();}
+ function mark(){var r=rowOf(me);['c1','c2'].forEach(function(id,ix){var col=document.getElementById(id);if(!col)return;
+  col.querySelectorAll('.nm').forEach(function(n){var nm=(n.firstChild&&n.firstChild.nodeType===3)?n.firstChild.nodeValue.trim():'';
+   n.classList.toggle('me',!!(r&&r.g===ix+1&&nm===r.n));});});}
+ s.addEventListener('change',function(){me=s.value||null;try{if(me)localStorage.setItem(KEY,me);else localStorage.removeItem(KEY)}catch(e){}
+  // 重設選項文字
+  s.innerHTML='<option value="">👤 我的班：選擇名字</option>'+opts(R1,1,'一組')+opts(R2,2,'二組');paint();});
+ ['c1','c2'].forEach(function(id){var col=document.getElementById(id);if(col)new MutationObserver(mark).observe(col,{childList:true,subtree:true});});
+ paint();
+})();
+</script>
+<style>
+/* ===== UI v8：字級、版面、美術優化 ===== */
+#topband{display:none!important}
+header{margin:2px 0 10px!important;padding-bottom:12px!important}
+header h1{font-size:21px!important;line-height:1.3}
+header h1 .ic{width:20px;height:20px;vertical-align:-3px}
+.sub{font-size:13px!important;margin-top:5px!important}
+/* 製作人：改成細長一行 */
+.credit{display:flex!important;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 12px;padding:8px 12px!important;margin:0 0 12px!important;border-radius:12px!important;box-shadow:0 0 14px rgba(46,230,200,.12)!important}
+.cname{font-size:16px!important;letter-spacing:.18em!important}
+.cwarn{font-size:11.5px!important;margin-top:0!important;opacity:.95}
+/* 我的班選單 */
+#myBar{margin:0 0 12px!important}
+#mySel{font-size:15px!important;padding:9px 34px 9px 16px!important;min-width:200px;text-align:center}
+/* 月曆 */
+.dates{gap:6px!important;margin-bottom:16px!important}
+.wk{font-size:13px!important;padding-bottom:4px!important}
+.d{min-height:62px;justify-content:center;padding:6px 1px!important;border-radius:12px!important;transition:transform .12s,box-shadow .12s,border-color .12s}
+.d:active{transform:scale(.96)}
+.d .wd{display:none!important}
+.d .num{font-size:19px!important;line-height:1.1}
+.d.sat .num{color:#9cc9ff}
+.d.sun .num{color:#ff9db4}
+.d .hol{font-size:10px!important;margin-top:3px!important}
+.d .today-t{font-size:10px!important;margin-top:3px!important}
+.d .my{font-size:12px!important;margin-top:4px!important;padding:2px 5px!important;letter-spacing:.02em}
+.d .my.rest{font-size:11.5px!important}
+.d.active{transform:translateY(-1px)}
+/* 換班／設定 */
+#swapBtn{font-size:15px!important;padding:10px 22px!important}
+/* 當日標題與按鈕 */
+.head{margin:6px 0 12px!important;scroll-margin-top:10px}
+.head .big{font-size:24px!important}
+.head .big small{font-size:14px!important}
+.btns .cp{font-size:15px!important}
+/* 兩組名單 */
+.cols{gap:10px!important}
+.grph{font-size:17px!important}
+.row{font-size:15px!important;line-height:1.45!important;padding:7px 1px!important;gap:9px!important;align-items:center!important}
+.code{font-size:13.5px!important;min-width:52px!important;padding:4px 6px!important}
+.nm{padding:1px 2px!important}
+.nm .mk{font-size:11.5px}
+.none{font-size:0!important}
+.none::after{content:"空缺";font-size:12px;font-weight:800;color:#ff7b96;border:1px dashed rgba(255,45,110,.6);border-radius:6px;padding:1px 7px;letter-spacing:.1em}
+.warn{font-size:13px!important;padding:7px 9px!important}
+.sub-h{font-size:12.5px!important;margin:12px 0 5px!important}
+.otag{font-size:11.5px!important}
+.g1 .who,.g2 .who{word-break:keep-all;overflow-wrap:anywhere}
+#emptyArt .cap{font-size:14px!important;margin-top:10px}
+@media (max-width:360px){
+ .d{min-height:56px}.d .num{font-size:17px!important}.d .my{font-size:10.5px!important;padding:1px 3px!important}
+ .row{font-size:14px!important}.code{min-width:46px!important;font-size:12.5px!important}
+}
+@media (min-width:700px){
+ .d{min-height:72px}.d .num{font-size:21px!important}.d .my{font-size:13px!important}
+}
+#stockbar{padding:12px 12px 10px!important;border-left-width:1.5px!important}
+#stockbar .sbtop{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+#stockbar .sbl{font:900 13px/1 "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif!important;letter-spacing:.1em!important;margin:0!important;padding:5px 9px!important}
+#stockbar .sbw{font:900 15px/1.2 "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#ffd38a}
+#stockbar .sbh{justify-content:space-between;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed rgba(230,171,77,.45)}
+#stockbar .sbc{font-size:17px!important;padding:3px 12px!important;letter-spacing:.06em}
+#stockbar .sbn{font:700 12.5px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#c9a96b}
+#stockbar .sbg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#stockbar .sbi2{display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.35);border:1px solid rgba(230,171,77,.28);border-radius:8px;padding:6px 8px;min-width:0}
+#stockbar .sbk{flex:0 0 auto;font:800 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#05070a;background:#e6ab4d;border-radius:4px;padding:3px 5px}
+#stockbar .sbm{font:800 13.5px/1.3 "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#eafdff;overflow-wrap:anywhere}
+@media (min-width:700px){#stockbar .sbg{grid-template-columns:repeat(3,1fr)}}
+</style>
+<script>
+(function(){
+ /* 製作人條移到標題下方 */
+ var cr=document.querySelector('.credit'),hd=document.querySelector('header');
+ if(cr&&hd&&hd.nextSibling)hd.parentNode.insertBefore(cr,hd.nextSibling);
+ /* 點日期後自動捲到當日名單 */
+ var _sel=window.sel;
+ if(typeof _sel==='function')window.sel=function(d,c){_sel(d,c);var t=document.getElementById('title');
+  if(t){var r=t.getBoundingClientRect();if(r.top>window.innerHeight*0.55)t.scrollIntoView({behavior:'smooth',block:'start'});}};
+})();
+</script>
+<script src="https://xsos32-design.github.io/job/kv.js" defer></script>
+</body>
+</html>
