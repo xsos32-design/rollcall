@@ -436,29 +436,37 @@ function openAdmin(){document.getElementById("adminModal").style.display="flex";
 function tryPw(){if(document.getElementById("pw").value.trim().toLowerCase()==="user"){sessionStorage.setItem("adm","1");unlockAdm();}else document.getElementById("pw").value="";}
 function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("statBody").innerHTML=statsHTML();}
 function closeAdmin(e){if(e&&e.target&&e.target.id!=="adminModal")return;document.getElementById("adminModal").style.display="none";}
-function statsHTML(){function tbl(R,C,g,tag){var P=g===1?"B":"T";var codes=[P+"1上",P+"1下",P+"2","外"+P+"2"];var lab=["1上","1下","2","外2"];
-  var data=R.map(function(p){var days=p[2].split(",");var cc={},tot=0,any=0;days.forEach(function(raw){raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(C.indexOf(pr.base)>=0)any++;if(codes.indexOf(pr.base)>=0){cc[pr.base]=(cc[pr.base]||0)+1;tot++;}});return {n:p[1],cc:cc,tot:tot,any:any};});
-  var act=data.filter(function(r){return r.any>0;});var N=act.length||1;
-  var avg={};codes.forEach(function(c){avg[c]=act.reduce(function(a,r){return a+(r.cc[c]||0);},0)/N;});var avgT=act.reduce(function(a,r){return a+r.tot;},0)/N;
+var STATMODE="all";function setStat(m){STATMODE=m;var b=document.getElementById("statBody");if(b)b.innerHTML=statsHTML();}
+function statsHTML(){
+  var _t=new Date();var UPTO=(STATMODE==="todate"&&_t.getFullYear()===YEAR&&_t.getMonth()+1===MONTH)?_t.getDate():NDAYS;
   function f1(x){return (Math.round(x*10)/10).toFixed(1);}
+  function sg(x){x=Math.round(x*10)/10;return (x>0?"+":"")+x.toFixed(1);}
   function tone(v,a){return v-a>=1?" up":(a-v>=1?" dn":"");}
-  var head='<div class="sh2 sn2">姓名</div>'+lab.map(function(c){return '<div class=sh2>'+c+'</div>';}).join("")+'<div class="sh2 tot">合計</div>';
-  var body=data.map(function(r){if(!r.any)return '<div class="sn2 off">'+r.n+'</div>'+codes.map(function(){return '<div class=z>·</div>';}).join("")+'<div class="tot z">—</div>';
-    return '<div class=sn2>'+r.n+'</div>'+codes.map(function(c){var v=r.cc[c]||0;return '<div class="'+(v?"":"z")+tone(v,avg[c])+'">'+v+'</div>';}).join("")+'<div class="tot'+tone(r.tot,avgT)+'">'+r.tot+'</div>';}).join("");
-  var foot='<div class="sn2 avg">平均</div>'+codes.map(function(c){return '<div class=avg>'+f1(avg[c])+'</div>';}).join("")+'<div class="tot avg">'+f1(avgT)+'</div>';
-  return '<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　'+MONTH+'月 · 公平性（1上／1下／2／外2）</div><div class=fairlg><span class=up>高於平均 1 次以上</span><span class=dn>低於平均 1 次以上</span><span>平均只算本月有站位的 '+act.length+' 人</span></div><div class=cgrid style="grid-template-columns:minmax(64px,1.3fr) repeat(5,1fr);min-width:0">'+head+foot+body+foot+'</div>';}
-  function bars(R,C,g,tag){var rows=R.map(function(p){var days=p[2].split(",");var sta=0,run=0,hol=0;
-    days.forEach(function(raw,i){raw=(raw||"").trim();var d=i+1;if(!raw||raw==="休")return;var pr=parse(raw,g);
-      if(C.indexOf(pr.base)>=0){sta++;if(pr.base[0]==="跑")run++;if(HOLIDAYS[d])hol++;}});
-    return {n:p[1],sta:sta,run:run,hol:hol};});
+  function tbl(R,C,g,tag){var P=g===1?"B":"T";var c1=[P+"1上",P+"1下"],c2=[P+"2","外"+P+"2"];
+    var data=R.map(function(p){var days=p[2].split(",");var a=0,b=0,any=0;days.forEach(function(raw,i){if(i>=UPTO)return;raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(C.indexOf(pr.base)>=0)any++;if(c1.indexOf(pr.base)>=0)a++;if(c2.indexOf(pr.base)>=0)b++;});return {n:p[1],a:a,b:b,any:any};});
+    var act=data.filter(function(r){return r.any>0;});var N=act.length||1;
+    var avA=act.reduce(function(s,r){return s+r.a;},0)/N,avB=act.reduce(function(s,r){return s+r.b;},0)/N;
+    function bar(a,b){var t=a+b;if(!t)return '<div class=rbar><span class=rz>—</span></div>';var pa=Math.round(a/t*100);return '<div class=rbar><i class=ra style="width:'+pa+'%"></i><i class=rb style="width:'+(100-pa)+'%"></i><span>'+pa+'% : '+(100-pa)+'%</span></div>';}
+    var head='<div class="sh2 sn2">姓名</div><div class=sh2>1號<small>1上+1下</small></div><div class=sh2>2號<small>2+外2</small></div><div class=sh2>比例 1號:2號</div>';
+    var avgRow='<div class="sn2 avg">平均</div><div class=avg>'+f1(avA)+'</div><div class=avg>'+f1(avB)+'</div><div class=avg>'+bar(avA,avB)+'</div>';
+    var body=data.map(function(r){if(!r.any)return '<div class="sn2 off">'+r.n+'</div><div class=z>·</div><div class=z>·</div><div class=z>無站位</div>';
+      return '<div class=sn2>'+r.n+'</div><div class="'+(r.a?"":"z")+tone(r.a,avA)+'">'+r.a+'</div><div class="'+(r.b?"":"z")+tone(r.b,avB)+'">'+r.b+'</div><div>'+bar(r.a,r.b)+'</div>';}).join("");
+    return '<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　1號／2號 比例</div><div class=cgrid style="grid-template-columns:minmax(60px,1.1fr) .8fr .8fr 2.2fr;min-width:0">'+head+avgRow+body+'</div>';}
+  function bars(R,C,g,tag){var rs={};for(var d=1;d<=UPTO;d++){var s0=runSet(d);Object.keys(s0).forEach(function(n){rs[n]=(rs[n]||0)+1;});}
+    var rows=R.map(function(p){var days=p[2].split(",");var sta=0,hol=0;
+      days.forEach(function(raw,i){if(i>=UPTO)return;raw=(raw||"").trim();var d=i+1;if(!raw||raw==="休")return;var pr=parse(raw,g);
+        if(C.indexOf(pr.base)>=0){sta++;if(HOLIDAYS[d])hol++;}});
+      return {n:p[1],sta:sta,run:rs[p[1]]||0,hol:hol};});
+    var act=rows.filter(function(r){return r.sta>0;});var avg=act.reduce(function(s,r){return s+r.sta;},0)/(act.length||1);
     var mx=Math.max(1,Math.max.apply(null,rows.map(function(r){return r.sta;})));
     var col=g===1?"linear-gradient(90deg,#19c9ad,#2ee6c8)":"linear-gradient(90deg,#d61e55,#ff5d7a)";
-    var x='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　站位天數 · 公平性</div><div class=barwrap>';
-    var sa=rows.map(function(r){return r.sta;});var mxS=Math.max.apply(null,sa);var ps=sa.filter(function(x){return x>0;});var mnS=ps.length?Math.min.apply(null,ps):0;
-    rows.forEach(function(r){var w=Math.round(r.sta/mx*100);var tg=(r.sta===mxS&&mxS>0)?' <b style="color:#ff85a6">最多</b>':((r.sta===mnS&&r.sta>0)?' <b style="color:#5ff6df">最少</b>':'');
-      x+='<div class=barrow><div class=bn>'+r.n+'</div><div class=bartrk><div class=barfill style="width:'+w+'%;background:'+col+'"></div></div><div class=barnum>'+r.sta+'天 跑'+r.run+' 假'+r.hol+tg+'</div></div>';});
+    var ap=Math.round(avg/mx*100);
+    var x='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　站位天數 · '+(UPTO<NDAYS?'截至 '+MONTH+'/'+UPTO:'整月')+'</div><div class=avgline>平均 <b>'+f1(avg)+'</b> 天（虛線）・右邊數字＝與平均差</div><div class=barwrap>';
+    rows.forEach(function(r){var w=Math.round(r.sta/mx*100);var df=r.sta-avg;var cls=r.sta?(df>=1?"dup":(df<=-1?"ddn":"dok")):"dok";
+      x+='<div class=barrow><div class=bn>'+r.n+'</div><div class=bartrk><div class=barfill style="width:'+w+'%;background:'+col+'"></div><i class=avgmk style="left:'+ap+'%"></i></div><div class=barnum>'+r.sta+'天 <b class="'+cls+'">'+(r.sta?sg(df):'—')+'</b><small> 跑'+r.run+' 假'+r.hol+'</small></div></div>';});
     return x+'</div>';}
-  return tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組")+bars(R1,CODES1,1,"一組")+bars(R2,CODES2,2,"二組");}
+  var tg='<div class=stog><button class="'+(STATMODE==="all"?"on":"")+'" onclick="setStat(\'all\')">整月</button><button class="'+(STATMODE==="todate"?"on":"")+'" onclick="setStat(\'todate\')">截至今天（累積）</button></div>';
+  return tg+tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組")+bars(R1,CODES1,1,"一組")+bars(R2,CODES2,2,"二組");}
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
   document.getElementById("emptyArt").style.display="none";document.getElementById("panel").style.display="";
   const t=document.getElementById("title");t.className="head";
@@ -599,6 +607,19 @@ header h1 .ic{width:20px;height:20px;vertical-align:-3px}
 #stockbar .sbk{flex:0 0 auto;font:800 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#05070a;background:#e6ab4d;border-radius:4px;padding:3px 5px}
 #stockbar .sbm{font:800 13.5px/1.3 "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#eafdff;overflow-wrap:anywhere}
 @media (min-width:700px){#stockbar .sbg{grid-template-columns:repeat(3,1fr)}}
+  .cgrid .sh2 small{display:block;font-size:9.5px;color:#7fa9a2;font-weight:700}
+  .rbar{position:relative;display:flex;height:22px;border-radius:6px;overflow:hidden;background:#0c1716;margin:0 4px}
+  .rbar i{display:block;height:100%}.rbar .ra{background:rgba(46,230,200,.55)}.rbar .rb{background:rgba(255,209,102,.5)}
+  .rbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:900 12px ui-monospace,Menlo,monospace;color:#fff;text-shadow:0 1px 2px #000}
+  .rbar .rz{color:#5b706c;text-shadow:none}
+  .stog{display:flex;gap:8px;justify-content:center;margin:4px 0 12px}
+  .stog button{font:800 13px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;padding:7px 14px;border-radius:999px;border:1px solid rgba(46,230,200,.4);background:transparent;color:#9fd;cursor:pointer}
+  .stog button.on{background:#2ee6c8;color:#032;border-color:#2ee6c8}
+  .avgline{font:700 12px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#9fb8b3;margin:-2px 0 8px}.avgline b{color:#ffd166}
+  .bartrk{position:relative}.avgmk{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed #ffd166;z-index:2;box-shadow:0 0 4px #ffd166}
+  .barnum b{font-weight:900}.barnum .dup{color:#ff9fb2}.barnum .ddn{color:#7af7e4}.barnum .dok{color:#cfe}
+  .barnum small{color:#7f9b96;font-size:10px}
+  .barrow{grid-template-columns:52px 1fr 122px!important}
 </style>
 <script>
 (function(){
