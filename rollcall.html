@@ -443,15 +443,17 @@ function statsHTML(){
   function sg(x){x=Math.round(x*10)/10;return (x>0?"+":"")+x.toFixed(1);}
   function tone(v,a){return v-a>=1?" up":(a-v>=1?" dn":"");}
   function tbl(R,C,g,tag){var P=g===1?"B":"T";var c1=[P+"1上",P+"1下"],c2=[P+"2","外"+P+"2"];
-    var data=R.map(function(p){var days=p[2].split(",");var a=0,b=0,any=0;days.forEach(function(raw,i){if(i>=UPTO)return;raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(C.indexOf(pr.base)>=0)any++;if(c1.indexOf(pr.base)>=0)a++;if(c2.indexOf(pr.base)>=0)b++;});return {n:p[1],a:a,b:b,any:any};});
-    var act=data.filter(function(r){return r.any>0;});var N=act.length||1;
-    var avA=act.reduce(function(s,r){return s+r.a;},0)/N,avB=act.reduce(function(s,r){return s+r.b;},0)/N;
-    function bar(a,b){var t=a+b;if(!t)return '<div class=rbar><span class=rz>—</span></div>';var pa=Math.round(a/t*100);return '<div class=rbar><i class=ra style="width:'+pa+'%"></i><i class=rb style="width:'+(100-pa)+'%"></i><span>'+pa+'% : '+(100-pa)+'%</span></div>';}
-    var head='<div class="sh2 sn2">姓名</div><div class=sh2>1號<small>1上+1下</small></div><div class=sh2>2號<small>2+外2</small></div><div class=sh2>比例 1號:2號</div>';
-    var avgRow='<div class="sn2 avg">平均</div><div class=avg>'+f1(avA)+'</div><div class=avg>'+f1(avB)+'</div><div class=avg>'+bar(avA,avB)+'</div>';
-    var body=data.map(function(r){if(!r.any)return '<div class="sn2 off">'+r.n+'</div><div class=z>·</div><div class=z>·</div><div class=z>無站位</div>';
-      return '<div class=sn2>'+r.n+'</div><div class="'+(r.a?"":"z")+tone(r.a,avA)+'">'+r.a+'</div><div class="'+(r.b?"":"z")+tone(r.b,avB)+'">'+r.b+'</div><div>'+bar(r.a,r.b)+'</div>';}).join("");
-    return '<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　1號／2號 比例</div><div class=cgrid style="grid-template-columns:minmax(60px,1.1fr) .8fr .8fr 2.2fr;min-width:0">'+head+avgRow+body+'</div>';}
+    var data=R.map(function(p){var days=p[2].split(",");var a=0,b=0,any=0;days.forEach(function(raw,i){if(i>=UPTO)return;raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(C.indexOf(pr.base)>=0)any++;if(c1.indexOf(pr.base)>=0)a++;if(c2.indexOf(pr.base)>=0)b++;});var el=days.some(function(raw){var pr=parse((raw||"").trim(),g);return c1.indexOf(pr.base)>=0||c2.indexOf(pr.base)>=0;});return {n:p[1],a:a,b:b,t:a+b,any:any,el:el};});
+    var act=data.filter(function(r){return r.el;});var N=act.length||1;
+    var avg=act.reduce(function(s,r){return s+r.t;},0)/N;
+    var mx=Math.max(1,Math.max.apply(null,data.map(function(r){return r.t;})),Math.ceil(avg));var ap=avg/mx*100;
+    var x='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　1號＋2號 站位次數 · '+(UPTO<NDAYS?'截至 '+MONTH+'/'+UPTO:'整月')+'</div>'
+      +'<div class=avgline>平均 <b>'+f1(avg)+'</b> 次（虛線）・<span class=lg1>■ 1號 1上/1下</span> <span class=lg2>■ 2號 2/外2</span>・越多越難達標・平均不含本月沒排 1/2 號的人</div><div class=barwrap>';
+    data.slice().sort(function(p,q){return q.t-p.t;}).forEach(function(r){
+      if(!r.el){x+='<div class=barrow><div class="bn off">'+r.n+'</div><div class=bartrk></div><div class=barnum><small>本月不排1/2號・不列入平均</small></div></div>';return;}
+      var df=r.t-avg;var cls=df>=1?"dup":(df<=-1?"ddn":"dok");
+      x+='<div class=barrow><div class=bn>'+r.n+'</div><div class=bartrk><div class=st1 style="width:'+(r.a/mx*100)+'%"></div><div class=st2 style="left:'+(r.a/mx*100)+'%;width:'+(r.b/mx*100)+'%"></div><i class=avgmk style="left:'+ap+'%"></i></div><div class=barnum><b class=tt>'+r.t+'</b>次 <b class="'+cls+'">'+sg(df)+'</b><small> 1號'+r.a+'・2號'+r.b+'・占'+Math.round(r.t/(r.any||1)*100)+'%</small></div></div>';});
+    return x+'</div>';}
   function bars(R,C,g,tag){var rs={};for(var d=1;d<=UPTO;d++){var s0=runSet(d);Object.keys(s0).forEach(function(n){rs[n]=(rs[n]||0)+1;});}
     var rows=R.map(function(p){var days=p[2].split(",");var sta=0,hol=0;
       days.forEach(function(raw,i){if(i>=UPTO)return;raw=(raw||"").trim();var d=i+1;if(!raw||raw==="休")return;var pr=parse(raw,g);
@@ -620,6 +622,13 @@ header h1 .ic{width:20px;height:20px;vertical-align:-3px}
   .barnum b{font-weight:900}.barnum .dup{color:#ff9fb2}.barnum .ddn{color:#7af7e4}.barnum .dok{color:#cfe}
   .barnum small{color:#7f9b96;font-size:10px}
   .barrow{grid-template-columns:52px 1fr 122px!important}
+  .bartrk .st1,.bartrk .st2{position:absolute;top:0;bottom:0}
+  .bartrk .st1{left:0;background:linear-gradient(90deg,#19c9ad,#2ee6c8);border-radius:6px 0 0 6px}
+  .bartrk .st2{background:linear-gradient(90deg,#e6ab4d,#ffd166)}
+  .lg1{color:#2ee6c8}.lg2{color:#ffd166}
+  .barnum .tt{color:#fff;font-size:14px}
+  .bn.off{color:#5b706c}
+  .barrow{grid-template-columns:52px 1fr 150px!important}
 </style>
 <script>
 (function(){
