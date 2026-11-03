@@ -351,11 +351,11 @@ function clearDay(){if(!curD)return;Object.keys(CK).forEach(k=>{if(k.indexOf(cur
 function rerender(){if(!curD)return;renderCol(R1,CODES1,curD,tmap(TRAIN1,curD),document.getElementById("c1"),1);renderCol(R2,CODES2,curD,tmap(TRAIN2,curD),document.getElementById("c2"),2);}
 function cls(c){if(c[0]==="外")return"cX";if(c[0]==="T")return"cT";if(c[0]==="B")return"cB";if(c[0]==="4")return"c4";if(c[0]==="L")return"cL";if(c[0]==="K")return"cX";return"";}
 function runSet(d){function occ(R,C,g,code){for(var i=0;i<R.length;i++){var raw=(R[i][2].split(",")[d-1]||"").trim();if(!raw||raw==="休")continue;var pr=parse(raw,g);if(pr.base===code)return R[i][1];}return null;}
-  var s={};[5,6].forEach(function(n){var bn=occ(R1,CODES1,1,"B"+n),tn=occ(R2,CODES2,2,"T"+n);if(bn&&!tn)s[bn]=1;if(tn&&!bn)s[tn]=1;});return s;}
+  var s={};[5,6,7,8].forEach(function(n){var bn=occ(R1,CODES1,1,"B"+n),tn=occ(R2,CODES2,2,"T"+n);if(bn&&!tn)s[bn]=1;if(tn&&!bn)s[tn]=1;});return s;}
 function group(R,CODES,d,tm,gnum){const map={};CODES.forEach(c=>map[c]=[]);const other={};const rs=runSet(d);
   R.forEach(p=>{let raw=(p[2].split(",")[d-1]||"").trim();
     if(!raw||raw==="休"){return;}
-    const {base,mark}=parse(raw,gnum);let ann=(mark||tm[p[1]])?"上課":"";if(rs[p[1]]&&(base==="B5"||base==="B6"||base==="T5"||base==="T6")){ann=ann?ann+"・跑":"跑";}
+    const {base,mark}=parse(raw,gnum);let ann=(mark||tm[p[1]])?"上課":"";if(rs[p[1]]&&/^[BT][5-8]$/.test(base)){ann=ann?ann+"・跑":"跑";}
     const it={name:p[1],grp:p[0],ann};
     if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
   return {map,other};}
