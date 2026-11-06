@@ -373,7 +373,7 @@ function stockBar(d){var e=document.getElementById("stockbar");if(!e)return;var 
 function reportText(R,CODES,d,tm,gnum){const g=group(R,CODES,d,tm,gnum);const lines=[`${MONTH}/${d}${R===R1?"一組":"二組"}點名`,""];
   CODES.forEach(c=>{if((c==="K8"||c==="L2")&&!g.map[c].length)return;
     const nm=g.map[c].map(x=>x.name+(x.ann?`（${x.ann}）`:"")+(CK[ckKey(d,gnum,x.name)]?"✅":"")).join("、");lines.push(`${c}：${nm||"🈚️"}`);});
-  const cl=classLines(d,gnum);if(cl.length){lines.push("","📚 今日上課");cl.forEach(x=>lines.push(`課程：${x.t}${x.h?"｜時間："+x.h:""}｜地點：${x.p||"未填"}｜${x.n}`));}
+  const cl=classLines(d,gnum);if(cl.length){lines.push("","📚 今日上課");cl.forEach(x=>lines.push(`・${x.t}${x.p?"＠"+x.p:""}：${x.n}`));}
   return lines.join("\n");}
 function classLines(d,gnum){const TR=(gnum===1?TRAIN1:TRAIN2)[d]||[];const seen={};
   const L=TR.map(t=>{const a=String(t[0]).split("·");t[1].split("、").forEach(n=>seen[n]=1);return {t:a[0],p:a[1]||"",h:a[2]||"",n:t[1]};});
