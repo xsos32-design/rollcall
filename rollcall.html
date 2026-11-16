@@ -400,10 +400,10 @@ function leadHTML(d,gnum){var c=leadCells();var head='<div class=sub-h>🧑‍�
   if(!v){st="上班 "+(p.def||"");cl="on";}else if(/FD/i.test(v)){st="上班・值星 FD";cl="on fd";}else if(OFF.test(v)){st="休（"+v+"）";cl="off";}else if(/課/.test(v)){st="上課";cl="cls";}else if(/^[KL]\d/i.test(v)){st="上班 "+v;cl="on";}else{st=v;cl="oth";}
   return '<div class="ldl '+cl+'"><b>'+n+'</b><span class=ldst>'+st+'</span>'+(p.tel&&cl.indexOf("on")===0?'<a class=ldtel href="tel:'+p.tel.replace(/-/g,"")+'">📞</a>':'')+'</div>';}).join("");}
 function leadsOK(){try{return sessionStorage.getItem("adm")==="1"}catch(e){return false}}
-function leadUnlock(){var i=document.getElementById("ldpw");if(i&&i.value.trim().toLowerCase()==="user"){try{sessionStorage.setItem("adm","1")}catch(e){}leadBox();}else if(i){i.value="";i.placeholder="密碼錯誤";}}
+function leadUnlock(){var i=document.getElementById("ldpw");if(i&&i.value.trim().toLowerCase()==="user"){try{sessionStorage.setItem("adm","1")}catch(e){}leadBox();}else if(i){i.value="";}}
 function leadBox(){var el=document.getElementById("leadbox");if(!el)return;if(typeof curD==="undefined"||!curD){el.innerHTML="";return;}
  var head='<div class=ldh>🧑‍✈️ 二期入境晚班組長・'+MONTH+'/'+curD+'</div>';
- if(!leadsOK()){el.innerHTML=head+'<div class=ldgate><input id=ldpw type=password autocomplete=off autocapitalize=off autocorrect=off spellcheck=false placeholder="輸入密碼查看" onkeydown="if(event.key===\'Enter\')leadUnlock()"><button onclick="leadUnlock()">→</button></div>';return;}
+ if(!leadsOK()){el.innerHTML='<div class=ldgate><input id=ldpw type=password autocomplete=off autocapitalize=off autocorrect=off spellcheck=false onkeydown="if(event.key===\'Enter\')leadUnlock()"><button onclick="leadUnlock()">→</button></div>';return;}
  var c=leadCells();
  if(!c){el.innerHTML=head+'<div class=ldl><span class=clsn>'+(LEADST==="err"?'幹部班表連不上，稍後再點日期':(LEADS?'幹部班表還沒有 '+MONTH+' 月資料':'讀取幹部班表中…'))+'</span></div>';return;}
  var OFF=/本\s*\d|本休|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$|^休$|病|事/;
@@ -691,6 +691,7 @@ header h1 .ic{width:20px;height:20px;vertical-align:-3px}
   .ldtel{margin-left:auto;text-decoration:none;font-size:15px}
   #leadbox{margin:12px 0 4px;border:1.5px solid rgba(255,209,102,.45);border-radius:14px;padding:10px 12px;background:rgba(255,209,102,.04)}
   #leadbox:empty{display:none}
+  #leadbox:has(.ldgate){border:none;background:none;padding:0}
   .ldh{font:900 15px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#ffd166;margin-bottom:6px;letter-spacing:.06em}
   .ldg{font:800 11px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#05070a;background:#2ee6c8;border-radius:5px;padding:1px 6px}
   .ldl .ldg+b{min-width:3.6em}
