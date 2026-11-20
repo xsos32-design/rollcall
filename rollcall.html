@@ -264,9 +264,10 @@
   <div id="adminModal" class="modal" onclick="closeAdmin(event)"><div class="mbox" onclick="event.stopPropagation()">
     <div id="gate"><input id="pw" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button onclick="tryPw()">→</button></div>
     <div id="adminBody" style="display:none">
-      <div class="statt" style="color:#ffd166">夜班幹部班表</div><div id="dutyWrap"><iframe src="https://xsos32-design.github.io/roster/"></iframe></div>
-      <div id="statBody"></div>
-      <button class="mclose" onclick="closeAdmin()">關閉</button>
+      <div class="admtop"><span class="admttl">幹部・統計</span><button class="admx" onclick="closeAdmin()" aria-label="關閉">✕</button></div>
+      <div class="admtabs"><button id="tabDuty" class="on" onclick="admTab('duty')">今日幹部</button><button id="tabStat" onclick="admTab('stat')">1・2號站位統計</button></div>
+      <div id="dutyPane"></div>
+      <div id="statBody" style="display:none"></div>
     </div></div></div>
   <div id="cornlogo">韋</div>
   <div id="swapModal" class="modal" onclick="if(event.target.id==='swapModal')this.style.display='none'"><div class="mbox" onclick="event.stopPropagation()">
@@ -384,7 +385,7 @@ const ICAP='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor
 /* 二期入境晚班組長（資料：幹部班表 roster 的 Apps Script，含調班紀錄）；只顯示在畫面、不進回報 */
 var LEADAPI="https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYpOw3XYjC5XQWEgI1DjK97fkvrvxWKN91Y32ba2S0sYQ/exec";
 var LEADS=(function(){try{return JSON.parse(localStorage.getItem("rc_leads")||"null")}catch(e){return null}})(),LEADST=LEADS?"cache":"loading";
-function loadLeads(){fetch(LEADAPI+"?k=&t="+Date.now()).then(function(r){return r.json()}).then(function(j){if(j&&j.ok){LEADS=j;LEADST="ok";try{localStorage.setItem("rc_leads",JSON.stringify(j))}catch(e){}}else if(!LEADS)LEADST="err";if(typeof curD!=="undefined"&&curD)rerender();}).catch(function(){if(!LEADS)LEADST="err";if(typeof curD!=="undefined"&&curD)rerender();});}
+function loadLeads(){fetch(LEADAPI+"?k=&t="+Date.now()).then(function(r){return r.json()}).then(function(j){if(j&&j.ok){LEADS=j;LEADST="ok";try{localStorage.setItem("rc_leads",JSON.stringify(j))}catch(e){}}else if(!LEADS)LEADST="err";if(typeof curD!=="undefined"&&curD)rerender();if(document.getElementById("dutyPane"))renderDuty();}).catch(function(){if(!LEADS)LEADST="err";if(typeof curD!=="undefined"&&curD)rerender();});}
 function leadCells(){if(!LEADS)return null;var mk=YEAR+"-"+String(MONTH).padStart(2,"0");var m=LEADS.months&&LEADS.months[mk];if(!m)return null;var cells={};
  Object.keys(m.people).forEach(function(n){cells[n]=Object.assign({},m.people[n].cells||{});});
  (LEADS.swaps||[]).filter(function(x){return x.month===mk}).sort(function(x,y){return String(x.at).localeCompare(String(y.at))}).forEach(function(sw){var a=sw.a,b=sw.b;
@@ -485,41 +486,45 @@ function copyMsg(i){var s=window._swaps[i];if(!s)return;var btn=(typeof event!==
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 function openAdmin(){document.getElementById("adminModal").style.display="flex";if(sessionStorage.getItem("adm")==="1")unlockAdm();else setTimeout(()=>document.getElementById("pw").focus(),50);}
 function tryPw(){if(document.getElementById("pw").value.trim().toLowerCase()==="user"){sessionStorage.setItem("adm","1");unlockAdm();if(typeof leadBox==="function")leadBox();}else document.getElementById("pw").value="";}
-function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("statBody").innerHTML=statsHTML();}
-function closeAdmin(e){if(e&&e.target&&e.target.id!=="adminModal")return;document.getElementById("adminModal").style.display="none";}
+function unlockAdm(){document.getElementById("gate").style.display="none";document.getElementById("adminBody").style.display="block";document.getElementById("adminModal").classList.add("full");DUTYD=(typeof curD!=="undefined"&&curD)?curD:(TODAY||1);renderDuty();document.getElementById("statBody").innerHTML=statsHTML();}
+var DUTYD=1;function admTab(t){document.getElementById("tabDuty").classList.toggle("on",t==="duty");document.getElementById("tabStat").classList.toggle("on",t==="stat");document.getElementById("dutyPane").style.display=t==="duty"?"":"none";document.getElementById("statBody").style.display=t==="stat"?"":"none";}
+function dutyGo(k){DUTYD=Math.min(NDAYS,Math.max(1,DUTYD+k));renderDuty();}
+function renderDuty(){var el=document.getElementById("dutyPane");if(!el)return;var d=DUTYD;
+ var nav='<div class=dnav><button onclick="dutyGo(-1)"'+(d<=1?' disabled':'')+'>‹</button><b>'+MONTH+'/'+d+'<small>週'+wd(d)+(HOLIDAYS[d]?'・'+HOLIDAYS[d]:'')+'</small></b><button onclick="dutyGo(1)"'+(d>=NDAYS?' disabled':'')+'>›</button></div>';
+ var c=leadCells();if(!c){el.innerHTML=nav+'<div class=dmsg>'+(LEADST==="err"?'幹部班表連不上，稍後再試':(LEADS?'幹部班表還沒有 '+MONTH+' 月資料':'讀取幹部班表中…'))+'</div>';if(!LEADS)setTimeout(renderDuty,1500);return;}
+ var OFF=/本\s*\d|本休|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$|^休$|病|事/;
+ function st(p,n){var v=String(c.cells[n][String(d)]||"").trim();if(!v)v=p.def||"";if(!v)return ["—","oth"];
+  if(/FD/i.test(v))return ["值星 "+(v.replace(/FD/i,"")||p.def||"")+" FD","on fd"];if(OFF.test(v))return ["休 "+v,"off"];if(/課/.test(v))return ["上課","cls"];if(/^[KL]\d/i.test(v))return [v,"on"];return [v,"oth"];}
+ function row(n,tag){var p=c.m.people[n];var r=st(p,n);return '<div class="drow '+r[1]+'"><span class=dtag>'+tag+'</span><b>'+n+'</b><span class=dst>'+r[0]+'</span>'+(p.tel&&r[1].indexOf("on")===0?'<a class=ldtel href="tel:'+p.tel.replace(/-/g,"")+'">📞</a>':'')+'</div>';}
+ var ord=c.m.order.filter(function(n){return c.m.people[n]});
+ var mgr=ord.filter(function(n){return c.m.people[n].kind==="mgr"});
+ var grpOf=function(re){return ord.filter(function(n){var p=c.m.people[n];return p.kind==="lead"&&re.test(p.post||"")});};
+ function sec(t,list,tag){if(!list.length)return "";return '<div class=dsec>'+t+'</div>'+list.map(function(n){return row(n,typeof tag==="function"?tag(n):tag)}).join("");}
+ var h=nav+sec("理級",mgr,function(n){var p=c.m.people[n];return p.title==="理級"?(p.area||"理級"):(p.title||"")})
+  +sec("二期入境・晚班",grpOf(/^SA[ㄧ一二]夜/),function(n){return /二夜/.test(c.m.people[n].post)?"二組":"一組"})
+  +sec("二期出境・晚班",grpOf(/^SD.*夜/),"出境")
+  +sec("二期・早班",grpOf(/^S[AD].*日/),function(n){return /^SA/.test(c.m.people[n].post)?"入境":"出境"});
+ el.innerHTML=h+'<a class=dfull href="https://xsos32-design.github.io/roster/" target="_blank" rel="noopener">開完整幹部班表 ↗</a>';}
+function closeAdmin(e){if(e&&e.target&&e.target.id!=="adminModal")return;document.getElementById("adminModal").style.display="none";document.getElementById("adminModal").classList.remove("full");}
 var STATMODE="all";function setStat(m){STATMODE=m;var b=document.getElementById("statBody");if(b)b.innerHTML=statsHTML();}
 function statsHTML(){
   var _t=new Date();var UPTO=(STATMODE==="todate"&&_t.getFullYear()===YEAR&&_t.getMonth()+1===MONTH)?_t.getDate():NDAYS;
   function f1(x){return (Math.round(x*10)/10).toFixed(1);}
   function sg(x){x=Math.round(x*10)/10;return (x>0?"+":"")+x.toFixed(1);}
   function tone(v,a){return v-a>=1?" up":(a-v>=1?" dn":"");}
-  function tbl(R,C,g,tag){var P=g===1?"B":"T";var c1=[P+"1上",P+"1下"],c2=[P+"2","外"+P+"2"];
-    var data=R.map(function(p){var days=p[2].split(",");var a=0,b=0,any=0;days.forEach(function(raw,i){if(i>=UPTO)return;raw=(raw||"").trim();if(!raw||raw==="休")return;var pr=parse(raw,g);if(C.indexOf(pr.base)>=0)any++;if(c1.indexOf(pr.base)>=0)a++;if(c2.indexOf(pr.base)>=0)b++;});var el=days.some(function(raw){var pr=parse((raw||"").trim(),g);return c1.indexOf(pr.base)>=0||c2.indexOf(pr.base)>=0;});return {n:p[1],a:a,b:b,t:a+b,any:any,el:el};});
-    var act=data.filter(function(r){return r.el;});var N=act.length||1;
-    var avg=act.reduce(function(s,r){return s+r.t;},0)/N;
-    var mx=Math.max(1,Math.max.apply(null,data.map(function(r){return r.t;})),Math.ceil(avg));var ap=avg/mx*100;
-    var x='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　1號＋2號 站位次數 · '+(UPTO<NDAYS?'截至 '+MONTH+'/'+UPTO:'整月')+'</div>'
-      +'<div class=avgline>平均 <b>'+f1(avg)+'</b> 次（虛線）・<span class=lg1>■ 1號 1上/1下</span> <span class=lg2>■ 2號 2/外2</span>・越多越難達標・平均不含本月沒排 1/2 號的人</div><div class=barwrap>';
-    data.slice().sort(function(p,q){return q.t-p.t;}).forEach(function(r){
-      if(!r.el){x+='<div class=barrow><div class="bn off">'+r.n+'</div><div class=bartrk></div><div class=barnum><small>本月不排1/2號・不列入平均</small></div></div>';return;}
-      var df=r.t-avg;var cls=df>=1?"dup":(df<=-1?"ddn":"dok");
-      x+='<div class=barrow><div class=bn>'+r.n+'</div><div class=bartrk><div class=st1 style="width:'+(r.a/mx*100)+'%"></div><div class=st2 style="left:'+(r.a/mx*100)+'%;width:'+(r.b/mx*100)+'%"></div><i class=avgmk style="left:'+ap+'%"></i></div><div class=barnum><b class=tt>'+r.t+'</b>次 <b class="'+cls+'">'+sg(df)+'</b><small> 1號'+r.a+'・2號'+r.b+'・占'+Math.round(r.t/(r.any||1)*100)+'%</small></div></div>';});
-    return x+'</div>';}
-  function bars(R,C,g,tag){var rs={};for(var d=1;d<=UPTO;d++){var s0=runSet(d);Object.keys(s0).forEach(function(n){rs[n]=(rs[n]||0)+1;});}
-    var rows=R.map(function(p){var days=p[2].split(",");var sta=0,hol=0;
-      days.forEach(function(raw,i){if(i>=UPTO)return;raw=(raw||"").trim();var d=i+1;if(!raw||raw==="休")return;var pr=parse(raw,g);
-        if(C.indexOf(pr.base)>=0){sta++;if(HOLIDAYS[d])hol++;}});
-      return {n:p[1],sta:sta,run:rs[p[1]]||0,hol:hol};});
-    var act=rows.filter(function(r){return r.sta>0;});var avg=act.reduce(function(s,r){return s+r.sta;},0)/(act.length||1);
-    var mx=Math.max(1,Math.max.apply(null,rows.map(function(r){return r.sta;})));
-    var col=g===1?"linear-gradient(90deg,#19c9ad,#2ee6c8)":"linear-gradient(90deg,#d61e55,#ff5d7a)";
-    var ap=Math.round(avg/mx*100);
-    var x='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'　站位天數 · '+(UPTO<NDAYS?'截至 '+MONTH+'/'+UPTO:'整月')+'</div><div class=avgline>平均 <b>'+f1(avg)+'</b> 天（虛線）・右邊數字＝與平均差</div><div class=barwrap>';
-    rows.forEach(function(r){var w=Math.round(r.sta/mx*100);var df=r.sta-avg;var cls=r.sta?(df>=1?"dup":(df<=-1?"ddn":"dok")):"dok";
-      x+='<div class=barrow><div class=bn>'+r.n+'</div><div class=bartrk><div class=barfill style="width:'+w+'%;background:'+col+'"></div><i class=avgmk style="left:'+ap+'%"></i></div><div class=barnum>'+r.sta+'天 <b class="'+cls+'">'+(r.sta?sg(df):'—')+'</b><small> 跑'+r.run+' 假'+r.hol+'</small></div></div>';});
-    return x+'</div>';}
+  function tbl(R,C,g,tag){var P=g===1?"B":"T";var codes=[P+"1上",P+"1下",P+"2","外"+P+"2"];var lab=["1上","1下","2","外2"];
+    var data=R.map(function(p){var days=p[2].split(",");var cc={},t=0,el=false;days.forEach(function(raw,i){var pr=parse((raw||"").trim(),g);var k=codes.indexOf(pr.base);if(k<0)return;el=true;if(i>=UPTO)return;cc[pr.base]=(cc[pr.base]||0)+1;t++;});return {n:p[1],cc:cc,t:t,el:el};});
+    var act=data.filter(function(r){return r.el});var N=act.length||1;var avg=act.reduce(function(a,r){return a+r.t},0)/N;
+    var av={};codes.forEach(function(c){av[c]=act.reduce(function(a,r){return a+(r.cc[c]||0)},0)/N;});
+    var rows=act.slice().sort(function(a,b){return b.t-a.t});
+    var h='<div class="statt '+(g===1?"c1":"c2")+'">'+tag+'</div><table class=ft><thead><tr><th>姓名</th>'+lab.map(function(l){return '<th>'+l+'</th>'}).join("")+'<th>合計</th><th>差</th></tr></thead><tbody>'
+     +'<tr class=favg><td>平均</td>'+codes.map(function(c){return '<td>'+f1(av[c])+'</td>'}).join("")+'<td>'+f1(avg)+'</td><td></td></tr>'
+     +rows.map(function(r){var df=r.t-avg;var cl=df>=1?"up":(df<=-1?"dn":"");return '<tr><td>'+r.n+'</td>'+codes.map(function(c){return '<td'+((r.cc[c]||0)===0?' class=z':'')+'>'+(r.cc[c]||0)+'</td>'}).join("")+'<td class="tt '+cl+'">'+r.t+'</td><td class="'+cl+'">'+sg(df)+'</td></tr>'}).join("")
+     +'</tbody></table>';
+    var off=data.filter(function(r){return !r.el}).map(function(r){return r.n});if(off.length)h+='<div class=fnote>本月沒排 1・2 號（不列入平均）：'+off.join("、")+'</div>';
+    return h;}
   var tg='<div class=stog><button class="'+(STATMODE==="all"?"on":"")+'" onclick="setStat(\'all\')">整月</button><button class="'+(STATMODE==="todate"?"on":"")+'" onclick="setStat(\'todate\')">截至今天（累積）</button></div>';
-  return tg+tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組")+bars(R1,CODES1,1,"一組")+bars(R2,CODES2,2,"二組");}
+  return tg+'<div class=fnote>1號＝1上＋1下，2號＝2＋外2；合計越多越難達標。「差」＝與全組平均相差的次數（紅多、綠少）。</div>'+tbl(R1,CODES1,1,"一組")+tbl(R2,CODES2,2,"二組");}
 function sel(d,c){document.querySelectorAll(".d.active").forEach(e=>e.classList.remove("active"));c.classList.add("active");curD=d;
   document.getElementById("emptyArt").style.display="none";document.getElementById("panel").style.display="";
   const t=document.getElementById("title");t.className="head";
@@ -700,6 +705,33 @@ header h1 .ic{width:20px;height:20px;vertical-align:-3px}
   .ldgate button{border:none;border-radius:999px;background:#ffd166;color:#05070a;font-weight:900;padding:0 16px}
   .invsh{font-size:11.5px;padding:1px 7px;border-radius:5px;background:rgba(255,255,255,.12);color:#cfe}
   .invsh.night{background:#ffd166;color:#05070a}
+  #adminModal.full{padding:0;align-items:stretch}
+  #adminModal.full .mbox{max-width:620px;max-height:none;height:100%;border-radius:0;border-width:0 1px;padding:0 14px 24px}
+  .admtop{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px 0 10px;background:#060f0e}
+  .admttl{font:900 19px "Microsoft JhengHei","微軟正黑體","Noto Sans TC",sans-serif;color:#ffd166;letter-spacing:.1em}
+  .admx{width:38px;height:38px;border-radius:50%;border:1px solid rgba(46,230,200,.45);background:transparent;color:#5ff6df;font-size:18px}
+  .admtabs{position:sticky;top:62px;z-index:5;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-bottom:12px;background:#060f0e}
+  .admtabs button{padding:10px;border-radius:999px;border:1px solid rgba(46,230,200,.4);background:transparent;color:#9fd;font:800 14px "Microsoft JhengHei","微軟正黑體",sans-serif}
+  .admtabs button.on{background:#2ee6c8;color:#032;border-color:#2ee6c8}
+  .dnav{display:flex;align-items:center;justify-content:space-between;margin:2px 0 10px}
+  .dnav b{font:900 22px "Microsoft JhengHei","微軟正黑體",sans-serif;color:#eafdff}.dnav b small{font-size:13px;color:#9fb8b3;margin-left:8px}
+  .dnav button{width:44px;height:40px;border-radius:12px;border:1px solid rgba(46,230,200,.4);background:transparent;color:#5ff6df;font-size:22px}.dnav button:disabled{opacity:.3}
+  .dsec{font:900 13px "Microsoft JhengHei","微軟正黑體",sans-serif;color:#ffd166;letter-spacing:.12em;margin:14px 0 4px;padding-bottom:4px;border-bottom:1px solid rgba(255,209,102,.3)}
+  .drow{display:flex;align-items:center;gap:9px;padding:8px 2px;border-bottom:1px solid rgba(255,255,255,.06);font:800 15px "Microsoft JhengHei","微軟正黑體",sans-serif;color:#eafdff}
+  .drow b{min-width:4.2em}.dtag{font-size:11px;min-width:3.4em;text-align:center;padding:2px 6px;border-radius:6px;background:rgba(46,230,200,.14);color:#7af7e4}
+  .dst{font-size:13px;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+  .drow.on .dst{color:#34f5c5}.drow.fd .dst{color:#ffd166}.drow.off{opacity:.5}.drow.off .dst{color:#9fb8b3}.drow.cls .dst{color:#ff9fb2}.drow.oth .dst{color:#cfe}
+  .dmsg{padding:20px 4px;color:#9fb8b3;font-weight:700}
+  .dfull{display:block;margin:16px 0 4px;text-align:center;padding:11px;border-radius:999px;border:1px solid rgba(255,209,102,.5);color:#ffd166;text-decoration:none;font:800 14px "Microsoft JhengHei",sans-serif}
+  .ft{width:100%;border-collapse:collapse;font:800 14px "Microsoft JhengHei","微軟正黑體",sans-serif;color:#eafdff;margin:4px 0 6px}
+  .ft th{font-size:12px;color:#7af0dd;padding:7px 2px;border-bottom:1.5px solid rgba(46,230,200,.4);text-align:center}
+  .ft td{padding:7px 2px;text-align:center;border-bottom:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums}
+  .ft td:first-child,.ft th:first-child{text-align:left;padding-left:4px}
+  .ft td.z{color:#41605b}.ft .tt{font-size:16px;color:#fff}
+  .ft .up{color:#ff9fb2!important}.ft .dn{color:#7af7e4!important}
+  .ft .favg td{color:#ffd166;background:rgba(255,209,102,.07)}
+  .fnote{font:700 12px "Microsoft JhengHei",sans-serif;color:#8fa9a4;margin:4px 0 12px;line-height:1.6}
+  #statBody .statt{margin-top:14px}
 </style>
 <script>
 (function(){
