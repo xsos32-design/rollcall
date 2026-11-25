@@ -357,7 +357,7 @@ function runSet(d){function occ(R,C,g,code){for(var i=0;i<R.length;i++){var raw=
 function group(R,CODES,d,tm,gnum){const map={};CODES.forEach(c=>map[c]=[]);const other={};const rs=runSet(d);
   R.forEach(p=>{let raw=(p[2].split(",")[d-1]||"").trim();
     if(!raw||raw==="休"){return;}
-    const {base,mark}=parse(raw,gnum);let ann=(mark||tm[p[1]])?"上課":"";if(rs[p[1]]&&/^[BT][5-8]$/.test(base)){ann=ann?ann+"・跑":"跑";}
+    const {base,mark}=parse(raw,gnum);let ann=(/月會/.test(mark)||/月會/.test(tm[p[1]]||""))?"月會":((mark||tm[p[1]])?"上課":"");if(rs[p[1]]&&/^[BT][5-8]$/.test(base)){ann=ann?ann+"・跑":"跑";}
     const it={name:p[1],grp:p[0],ann};
     if(CODES.includes(base))map[base].push(it); else (other[base]=other[base]||[]).push(p[1]);});
   return {map,other};}
